@@ -51,18 +51,6 @@ class EinsatzkomponenteController extends JControllerLegacy
         if($version!=str_replace("Premium","",$version)):
 		$params->set('eiko', '1');
 		endif;  ?>
-		
-<?php if (!$params['eiko']) : ?>	 	
-		<table>
-		<tr>
-		<div class="alert alert-danger j-toggle-main " style="">
-		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9HDFKVJSKSEFY"><span style="float:left;"><img border=0  width="100px" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif" /></span></a>
-		Unterstützen Sie bitte die Weiterentwicklung unseres Projekts EINSATZKOMPONENTE mit einer Spende, damit wir unsere Software auch weiterhin kostenlos und werbefrei zur Verfügung stellen können.<br/><small>Dieses Fenster wird nach der Eingabe des Validationsschlüssel automatisch ausgeblendet</small>.  
-		</div>        
-		</tr>
-		</table>
-<?php endif; ?>
 
 <?php	// Catch Sites 
 
