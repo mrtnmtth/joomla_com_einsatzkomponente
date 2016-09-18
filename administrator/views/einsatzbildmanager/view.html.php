@@ -107,7 +107,7 @@ class EinsatzkomponenteViewEinsatzbildmanager extends JViewLegacy
         
 		
 		//Filter for the field created_by
-		$this->extra_sidebar .= '<small><label for="filter_created_by">Created by</label></small>';
+		$this->extra_sidebar = '<small><label for="filter_created_by">Created by</label></small>';
 		$this->extra_sidebar .= JHtmlList::users('filter_created_by', $this->state->get('filter.created_by'), 1, 'onchange="this.form.submit();"');
         
 		$options = '';
@@ -120,8 +120,6 @@ class EinsatzkomponenteViewEinsatzbildmanager extends JViewLegacy
 			JHtml::_('select.options', $options, "value", "text", $this->state->get('filter.state'), true)
 		);
 		endif;
-        $this->extra_sidebar = '';
-        
 	}
     
 	protected function getSortFields()
