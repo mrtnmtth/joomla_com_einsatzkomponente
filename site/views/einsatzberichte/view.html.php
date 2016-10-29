@@ -158,8 +158,7 @@ class EinsatzkomponenteViewEinsatzberichte extends JViewLegacy
 		JHtml::_('jquery.framework',false);
 		// prüfen ob jquery geladen wurde
 		echo "<script type=\"text/javascript\">
-		if(typeof jQuery == \"function\")
-		else
+		if (typeof jQuery !== \"function\")
 		  alert(\"jQuery nicht geladen\");
 		</script>";
 		
