@@ -45,6 +45,17 @@ class EinsatzkomponenteViewEinsatzfahrzeug extends JViewLegacy
 		$this->item   = $this->get('Data');
 		$this->params = $app->getParams('com_einsatzkomponente');
 
+		$document = JFactory::getDocument();
+
+		if ($this->params->get('display_einsatzfahrzeuge_bootstrap','1')) :
+		// Import Bootstrap
+ 		$document->addScript('components/com_einsatzkomponente/assets/bootstrap/js/bootstrap.min.js');	
+ 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap.min.css');
+ 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap-responsive.min.css');
+		endif;
+		$document->addStyleDeclaration($this->params->get('fahrzeug_css','')); 
+		
+		
 		if (!empty($this->item))
 		{
 			$this->form = $this->get('Form');

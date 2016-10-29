@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="1.6.0" method="upgrade">
+<extension type="component" version="3.2.0" method="upgrade">
     <name>com_einsatzkomponente</name>
-    <creationDate>2016-01-04</creationDate>
-    <copyright>Copyright (C) 2015 by Ralf Meyer. All rights reserved.</copyright>
+    <creationDate>2016-09-04</creationDate>
+    <copyright>Copyright (C) 2016 by Ralf Meyer. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later</license>
     <author>Ralf Meyer</author>
     <authorEmail>webmaster@feuerwehr-veenhusen.de</authorEmail>
     <authorUrl>http://einsatzkomponente.de</authorUrl>
-    <version>3.10</version>
+    <version>3.13</version>
 	
     <description>
             <![CDATA[
@@ -51,8 +51,8 @@
 	</media>
 	
     <administration>
-        <menu img="components/com_einsatzkomponente/assets/images/s_com_einsatzkomponente.png" >COM_EINSATZKOMPONENTE</menu>
-        <submenu>
+        <menu img="components/com_einsatzkomponente/assets/images/s_com_einsatzkomponente.png" >COM_EINSATZKOMPONENTE_MENU</menu>
+        <submenu> 
 			<menu link="option=com_einsatzkomponente&amp;view=kontrollcenter" view="kontrollcenter" img="components/com_einsatzkomponente/assets/images/s_com_einsatzkomponente.png" alt="Einsatzkomponente/Kontrollcenter">COM_EINSATZKOMPONENTE_TITLE_KONTROLLCENTER</menu>
 			<menu link="option=com_einsatzkomponente&amp;view=einsatzberichte" view="einsatzberichte" img="components/com_einsatzkomponente/assets/images/s_einsatzberichte.png" alt="Einsatzkomponente/Einsatzberichte">COM_EINSATZKOMPONENTE_TITLE_EINSATZBERICHTE</menu>
 			<menu link="option=com_einsatzkomponente&amp;view=kategorien" view="kategorien" img="components/com_einsatzkomponente/assets/images/s_kategorien.png" alt="Einsatzkomponente/Kategorien">COM_EINSATZKOMPONENTE_TITLE_KATEGORIEN</menu>
@@ -68,6 +68,7 @@
             <filename>access.xml</filename>
             <filename>config.xml</filename>
             <filename>controller.php</filename>
+            <filename>CHANGELOG.php</filename>
             <filename>index.html</filename>
             <filename>einsatzkomponente.php</filename>
             <folder>controllers</folder>

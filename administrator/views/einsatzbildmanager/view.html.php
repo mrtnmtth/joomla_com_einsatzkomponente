@@ -101,8 +101,6 @@ class EinsatzkomponenteViewEinsatzbildmanager extends JViewLegacy
 			JToolBarHelper::preferences('com_einsatzkomponente');
 		}
     
-		$version = new JVersion;
-        if ($version->isCompatible('3.0')) :
         //Set sidebar action - New in 3.0
 		JHtmlSidebar::setAction('index.php?option=com_einsatzkomponente&view=einsatzbildmanager');
         

@@ -47,6 +47,16 @@ class EinsatzkomponenteViewOrganisation extends JViewLegacy
 		$this->params = $app->getParams('com_einsatzkomponente');
 		$this->orga_fahrzeuge = EinsatzkomponenteHelper::getOrga_fahrzeuge($this->item->id);  
 
+		$document = JFactory::getDocument();
+
+		if ($this->params->get('display_orga_bootstrap','1')) :
+		// Import Bootstrap
+ 		$document->addScript('components/com_einsatzkomponente/assets/bootstrap/js/bootstrap.min.js');	
+ 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap.min.css');
+ 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap-responsive.min.css');
+		endif;
+		$document->addStyleDeclaration($this->params->get('organisation_css','')); 
+		
 		if (!empty($this->item))
 		{
 			$this->form = $this->get('Form');
