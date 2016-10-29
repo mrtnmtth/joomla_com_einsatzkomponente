@@ -5,11 +5,11 @@
 		<description></description>
 		<element>com_einsatzkomponente</element>
 		<type>component</type>
-		<version>3.10</version>
+		<version>3.13</version>
 		<client>administrator</client>
 		<infourl title="Info">https://github.com/mttronc/joomla_com_einsatzkomponente/releases</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/mttronc/joomla_com_einsatzkomponente/archive/V3.10-fwrethen.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/mttronc/joomla_com_einsatzkomponente/archive/V3.13-fwrethen.zip</downloadurl>
 		</downloads>
 		<targetplatform name="joomla" version="3.[0123456789]" />
 	</update>
