@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @version    CVS: 3.9
- * @package    Com_Einsatzkomponente
- * @author     Ralf Meyer <ralf.meyer@einsatzkomponente.de>
- * @copyright  Copyright (C) 2015. Alle Rechte vorbehalten.
- * @license    GNU General Public License Version 2 oder später; siehe LICENSE.txt
+ * @version     3.15.0
+ * @package     com_einsatzkomponente
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 defined('_JEXEC') or die;
 
@@ -56,6 +56,7 @@ class EinsatzkomponenteModelOrganisationen extends JModelList
 				'desc', 'a.desc',
 				'state', 'a.state',
 				'created_by', 'a.created_by',
+                'params', 'a.params',
 			);
 		}
 
@@ -230,7 +231,7 @@ if (empty($list['direction']))
 				)
 			);
 
-		$query->from('`#__eiko_organisationen` AS a');
+		$query->from('#__eiko_organisationen AS a');
 		
 
 		// Join over the created by field 'created_by'
@@ -319,7 +320,7 @@ $query->where('( a.name LIKE '.$search.' )');
 
 		foreach ($filters as $key => $value)
 		{
-			if (strpos($key, '_dateformat') && !empty($value) && $this->isValidDate($value) == null)
+			if (strpos($key, '_dateformat') && !empty($value))
 			{
 				$filters[$key]    = '';
 				$error_dateformat = true;
@@ -335,16 +336,4 @@ $query->where('( a.name LIKE '.$search.' )');
 		return parent::loadFormData();
 	}
 
-	/**
-	 * Checks if a given date is valid and in a specified format (YYYY-MM-DD)
-	 *
-	 * @param   string  $date  Date to be checked
-	 *
-	 * @return bool
-	 */
-	private function isValidDate($date)
-	{
-		$date = str_replace('/', '-', $date);
-		return (date_create($date)) ? JFactory::getDate($date)->format("Y-m-d") : null;
-	}
 }

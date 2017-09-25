@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // no direct access
 defined('_JEXEC') or die;
@@ -28,7 +28,7 @@ defined('_JEXEC') or die;
 
 <!--RSS-Feed Imag-->
 <?php if ($this->params->get('display_home_rss','1')) : ?>
-<div style="float:right;" class="eiko_rss" ><a href="<?php JURI::base();?>index.php?option=com_einsatzkomponente&view=einsatzberichte&format=feed&type=rss"><img src="<?php echo JURI::Root();?>/components/com_einsatzkomponente/assets/images/livemarks.png" class="eiko_rss_icon" border="0" alt="rss-feed-image"></a></div>
+<div style="float:right;" class="eiko_rss" ><a href="<?php JURI::base();?>index.php?option=com_einsatzkomponente&view=einsatzberichte&format=feed&type=rss"><span class="icon-feed" style="color:#cccccc;font-size:24px;"> </span> </a></div>
 <?php endif; ?>
 
 
@@ -53,7 +53,7 @@ defined('_JEXEC') or die;
 	//echo '<div style="text-align:center;margin-bottom:20px;"><img src="'.JURI::Root().'images/com_einsatzkomponente/images/years/home'.$year.'.png" title="Eins&auml;tze '.$year_text.'" /></div>';
 
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzberichte'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzberichte&list=1'); ?>" method="post" name="adminForm" id="adminForm">
 <?php
 	echo 'Jahr: ';
 
@@ -188,14 +188,22 @@ if ($this->params->get('display_home_pagination')) :
            <?php else:?>
 		   <td style="text-align:center;color:#000000;font-weight:bold;font-size:larger;" >
            <?php endif;?>
-           <?php if ($this->params->get('display_home_number','1')) : ?>
+		   
+           <?php if ($this->params->get('display_home_number','2') == '1') : ?>
            <?php if ($hide) :?>
            <?php echo $i.' - '.($i + $hide);$hide =0;?>
            <?php else:?>
            <?php echo $i;?>
            <?php endif;?>
            <?php endif;?>
-           <?php if ($this->params->get('display_home_alertimage_num','0')) : ?>
+		   
+           <?php if ($this->params->get('display_home_number','2') == '2') : 
+				$item->date_11 		= strtotime($item->date1);
+				$item->date1_year 	= date('Y', $item->date_11);
+				echo '<span style="white-space: nowrap;" class="eiko_span_marker_main_1">Nr. '.EinsatzkomponenteHelper::ermittle_einsatz_nummer($item->date_11,$item->data1).' / '.$item->date1_year.'</span>';
+				endif;?>
+
+		<?php if ($this->params->get('display_home_alertimage_num','0')) : ?>
            <br/><img class="img-rounded" style="width:30px; height:30px;" src="<?php echo JURI::Root();?><?php echo $item->image;?>" title="<?php echo $item->alarmierungsart;?>" />
            <?php endif;?>
             </td>
@@ -244,7 +252,7 @@ if ($this->params->get('display_home_pagination')) :
 				<!--<br /><button class="btn-home" onClick="jQuery.toggle<?php echo $item->id;?>(div<?php echo $item->id;?>)">Kurzinfo</button>-->
 				<br />
 			   <?php if ($this->params->get('display_home_links','1')) : ?>
-				<!--<a class="btn-home" href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente'.$this->layout_detail_link.'&view=einsatzbericht&id=' . (int)$item->id); ?>">Details</a>-->
+				<a class="btn-home" href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente'.$this->layout_detail_link.'&view=einsatzbericht&id=' . (int)$item->id); ?>">Details</a>
 			   <?php endif;?>
 
 				<script type="text/javascript">
@@ -256,7 +264,7 @@ if ($this->params->get('display_home_pagination')) :
 				</script>
 				<?php endif;?>            
            </td>		   		   
-		   <td align="center"><?php echo '<i class="icon-arrow-right"></i> '.$item->address;?></td>
+		   <td align="center"><?php echo '<i class="icon-location" ></i> '.$item->address;?></td>
            
            <?php if ($this->params->get('display_home_orga','0')) : ?>
            <?php 					$data = array();
@@ -265,7 +273,7 @@ if ($this->params->get('display_home_pagination')) :
 						$query	= $db->getQuery(true);
 						$query
 							->select('name')
-							->from('`#__eiko_organisationen`')
+							->from('#__eiko_organisationen')
 							->where('id = "' .$value.'"');
 						$db->setQuery($query);
 						$results = $db->loadObjectList();
@@ -279,8 +287,17 @@ if ($this->params->get('display_home_pagination')) :
            <?php endif;?>
 
            <?php if ($this->params->get('display_home_image')) : ?>
-		   <?php if ($item->foto) : ?>		   
-		   <td class="mobile_image" style="text-align:center;vertical-align:center;padding-top:5px;"> <img  class="img-rounded" style="width:<?php echo $this->params->get('display_home_image_width','80px');?>;" src="<?php echo JURI::Root();?><?php echo $item->foto;?>"/></td>
+		   <?php if ($item->foto) : ?>	
+		   <td class="mobile_image" style="text-align:center;vertical-align:center;padding-top:5px;">
+			<?php if ($this->params->get('display_home_links_3','0')) : ?>
+			<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&id='.(int) $item->id); ?>">
+			<?php endif; ?> 
+		   <img  class="img-rounded" style="width:<?php echo $this->params->get('display_home_image_width','80px');?>;" src="<?php echo JURI::Root();?><?php echo $item->foto;?>"/>
+			<?php if ($this->params->get('display_home_links_3','0')) : ?>
+			</a>
+			<?php endif;?>
+		   </td>
+		   
            <?php endif;?>
 		   <?php if (!$item->foto) : ?>
            <?php if ($this->params->get('display_home_image_nopic','0')) : ?>
@@ -384,7 +401,7 @@ if ($this->params->get('display_home_pagination')) :
 
 <?php if (!$this->params->get('eiko')) : ?>
         <tr><!-- Bitte das Copyright nicht entfernen. Danke. -->
-            <th colspan="<?php echo $col;?>"><span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2015 by Ralf Meyer (<a class="copyright_link" href="http://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a>)</span></th>
+            <th colspan="<?php echo $col;?>"><span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2017 by Ralf Meyer (<a class="copyright_link" href="http://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a>)</span></th>
         </tr>
 	<?php endif; ?>
     

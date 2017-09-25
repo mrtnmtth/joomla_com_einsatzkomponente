@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.1.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2014. Alle Rechte vorbehalten.
- * @license     GNU General Public License Version 2 oder später; siehe LICENSE.txt
- * @author      Ralf Meyer <ralf.meyer@einsatzkomponente.de> - http://einsatzkomponente.de
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // no direct access
 defined('_JEXEC') or die;
@@ -19,66 +19,89 @@ defined('_JEXEC') or die;
     <?php echo JLayoutHelper::render('default_filter', array('view' => $this), dirname(__FILE__)); ?>
     <table class="table" id = "einsatzberichtList" >
         <thead >
+		
+			<?php $eiko_col = 0;?>
+
             <tr class="mobile_hide_480 ">
 			
 				<th class='left'>
 				<?php echo 'Nr.'; ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th>
 
 				<th class='left'>
-				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_EINSATZBERICHTE_DATE1', 'a.date1', $listDirn, $listOrder); ?>
+				<?php echo JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_DATE1'); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th>
 				
     			<th class='left'>
 				<?php echo ''; ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th>
 				
            <?php if ($this->params->get('display_home_image')) : ?>
 				<th class='left mobile_hide_480 '>
-				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_EINSATZBERICHTE_IMAGE', 'a.image', $listDirn, $listOrder); ?>
+				<?php echo JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_IMAGE'); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th>
 			<?php endif;?>
 				
 		<!--		<th class='left'>
-				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_EINSATZBERICHTE_IMAGES', 'a.images', $listDirn, $listOrder); ?>
+				<?php echo JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_IMAGES'); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th> -->
 				<th class='left mobile_hide_480'>
-				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_EINSATZBERICHTE_SUMMARY', 'a.summary', $listDirn, $listOrder); ?>
+				<?php echo JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_SUMMARY'); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th>
 				<?php if ($this->params->get('display_home_orga','0')) : ?>
 				<th class='left'>
-				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_EINSATZBERICHTE_AUSWAHLORGA', 'a.auswahl_orga', $listDirn, $listOrder); ?>
+				<?php echo JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_AUSWAHLORGA'); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th> 
 				<?php endif; ?>
 		<!--		<th class='left'>
 				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_EINSATZBERICHTE_VEHICLES', 'a.vehicles', $listDirn, $listOrder); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th> -->
 				<?php if ($this->params->get('display_home_counter','1')) : ?>
 				<th class='left mobile_hide_480 '>
-				<?php echo JHtml::_('grid.sort',  'Zugriffe', 'a.counter', $listDirn, $listOrder); ?>
+				<?php echo JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_ZUGRIFFE'); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th>
 				<?php endif;?>
 		<!--		<th class='left'>
 				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_EINSATZBERICHTE_CREATED_BY', 'a.created_by', $listDirn, $listOrder); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th> -->
 
 
     <?php if (isset($this->items[0]->id)): ?>
       <!--  <th width="1%" class="nowrap center hidden-phone">
             <?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
+				<?php $eiko_col = $eiko_col+1;?>
         </th> -->
     <?php endif; ?>
 
     		<?php if ($canEdit || $canDelete): ?>
              <?php if (isset($this->items[0]->state)): ?>
 				<th width="1%" class="nowrap center">
-				<?php echo JHtml::_('grid.sort', 'Actions', 'a.state', $listDirn, $listOrder); ?>
+				<?php echo JText::_('Actions'); ?>
+				<?php $eiko_col = $eiko_col+1;?>
 				</th>
 			<?php endif; ?>  
 			<?php endif; ?>
 	
 
     </tr>
+    <?php if ($canCreate): ?>
+        <tr>
+        <td colspan="<?php echo $eiko_col;?>">
+        <a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzberichtform&layout=edit&id=0&addlink=1', false, 2); ?>"
+           class="btn btn-success btn-small"><i
+                class="icon-plus"></i> <?php echo JText::_('COM_EINSATZKOMPONENTE_ADD'); ?></a>
+		</td></tr>
+    <?php endif; ?>
     </thead>
 	
     <tbody>
@@ -95,10 +118,10 @@ defined('_JEXEC') or die;
 
            <!--Anzeige des Jahres-->
            <?php if ($item->date1_year != $y&& $this->params->get('display_home_jahr','1')) : ?>
-		   <tr class="eiko_einsatzarchiv_jahr_tr"><td class="eiko_einsatzarchiv_jahr_td" colspan="7">
+		   <tr class="eiko_einsatzarchiv_jahr_tr"><td class="eiko_einsatzarchiv_jahr_td" colspan="<?php echo $eiko_col; ?>">
            <?php $y= $item->date1_year;?>
 		   <?php echo '<div class="eiko_einsatzarchiv_jahr_div">';?>
-           <?php echo 'Einsatzberichte '. $item->date1_year.' :';?> 
+           <?php echo 'Einsatzberichte '. $item->date1_year.'';?> 
            <?php echo '</div>';?>
            </td></tr>
            <?php endif;?>
@@ -106,7 +129,7 @@ defined('_JEXEC') or die;
 
            <!--Anzeige des Monatsnamen-->
            <?php if ($item->date1_month != $m && $this->params->get('display_home_monat','1')) : ?>
-		   <tr class="eiko_einsatzarchiv_monat_tr"><td class="eiko_einsatzarchiv_monat_td" colspan="7">
+		   <tr class="eiko_einsatzarchiv_monat_tr"><td class="eiko_einsatzarchiv_monat_td" colspan="<?php echo $eiko_col; ?>">
            <?php $m= $item->date1_month;?>
 		   <?php echo '<div class="eiko_einsatzarchiv_monat_div">';?>
            <?php echo $this->monate[$m];?>
@@ -150,19 +173,25 @@ defined('_JEXEC') or die;
 					<?php if (isset($item->checked_out) && $item->checked_out) : ?>
 					<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'einsatzarchiv.', $canCheckin); ?>
 					<?php endif; ?> 
+					
+					<?php if ($this->params->get('display_home_links','1')) : ?>
 					<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&id='.(int) $item->id); ?>">
+					<?php endif; ?> 
 					
 					<?php if ($this->params->get('display_home_alertimage','0')) : ?>
-					<img class="eiko_icon hasTooltip" src="<?php echo JURI::Root();?><?php echo $item->alerting_image;?>" title="Alarmierung über: <?php echo $item->alerting;?>" />
+					<img class="eiko_icon " src="<?php echo JURI::Root();?><?php echo $item->alerting_image;?>" title="Alarmierung Ã¼ber: <?php echo $item->alerting;?>" />
 					<?php endif;?>
 					<?php if ($this->params->get('display_list_icon')) : ?>
-					<img class="eiko_icon hasTooltip" src="<?php echo JURI::Root();?><?php echo $item->list_icon;?>" alt="<?php echo $item->list_icon;?>" title="Einsatzart: <?php echo $item->data1;?>"/>
+					<img class="eiko_icon " src="<?php echo JURI::Root();?><?php echo $item->list_icon;?>" alt="<?php echo $item->list_icon;?>" title="Einsatzart: <?php echo $item->data1;?>"/>
 					<?php endif;?>
 					<?php if ($this->params->get('display_tickerkat_icon')) : ?>
-					<img class="eiko_icon hasTooltip" src="<?php echo JURI::Root();?><?php echo $item->tickerkat_image;?>" alt="<?php echo $item->tickerkat;?>" title="Kategorie: <?php echo $item->tickerkat;?>"/>
+					<img class="eiko_icon " src="<?php echo JURI::Root();?><?php echo $item->tickerkat_image;?>" alt="<?php echo $item->tickerkat;?>" title="Kategorie: <?php echo $item->tickerkat;?>"/>
 					<?php endif;?>
 					
-					<span class="eiko_nowrap"><b><?php echo $item->data1; ?></b></span></a>
+					<span class="eiko_nowrap"><b><?php echo $item->data1; ?></b></span>
+					<?php if ($this->params->get('display_home_links','1')) : ?>
+					</a>
+					<?php endif;?>
 					<br/>
 					<?php if ($item->address): ?>
 					<?php //echo '<i class="icon-arrow-right"></i> '.$this->escape($item->address); ?>
@@ -180,10 +209,34 @@ defined('_JEXEC') or die;
 					<?php if (isset($item->checked_out) && $item->checked_out) : ?>
 					<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'einsatzarchiv.', $canCheckin); ?>
 					<?php endif; ?> 
+					
+					<?php if ($this->params->get('display_home_links_3','0')) : ?>
 					<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&id='.(int) $item->id); ?>">
+					<?php endif; ?> 
+					
 		   <img  class="img-rounded eiko_img_einsatzbild_main_1" style="width:<?php echo $this->params->get('display_home_image_width','80px');?>;" src="<?php echo JURI::Root();?><?php echo $item->image;?>"/>
+		   
+					<?php if ($this->params->get('display_home_links_3','0')) : ?>
 					</a>
+					<?php endif; ?> 
            <?php endif;?>
+		   
+		   <?php if (!$item->image AND $this->params->get('display_home_image_nopic','0')) : ?>
+					<?php if (isset($item->checked_out) && $item->checked_out) : ?>
+					<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'einsatzarchiv.', $canCheckin); ?>
+					<?php endif; ?> 
+					
+					<?php if ($this->params->get('display_home_links_3','0')) : ?>
+					<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&id='.(int) $item->id); ?>">
+					<?php endif; ?> 
+
+					<img  class="img-rounded eiko_img_einsatzbild_main_1" style="width:<?php echo $this->params->get('display_home_image_width','80px');?>;" src="<?php echo JURI::Root().'images/com_einsatzkomponente/einsatzbilder/nopic.png';?>"/>
+					
+					<?php if ($this->params->get('display_home_links_3','0')) : ?>
+					</a>
+					<?php endif;?>
+           <?php endif;?>
+		   
 		   </td>
            <?php endif;?>
 		<!--		<td>
@@ -222,9 +275,6 @@ defined('_JEXEC') or die;
 				</td>
 				<?php endif; ?>
 				
-		<!--		<td>
-
-							<?php echo JFactory::getUser($item->created_by)->name; ?>				</td> -->
 
 
             <?php if (isset($this->items[0]->id)): ?>
@@ -238,8 +288,8 @@ defined('_JEXEC') or die;
                 <?php $class = ($canEdit || $canChange) ? 'active' : 'disabled'; ?>
                 <td class="center">
 					<?php if ($canEdit): ?>
-                    <a class="btn btn-micro <?php echo $class; ?>"
-                       href="<?php echo ($canEdit || $canChange) ? JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzberichtform.publish&id=' . $item->id . '&state=' . (($item->state + 1) % 2), false, 2) : '#'; ?>">
+                    <a class="btn btn-mini <?php echo $class; ?>"
+                       href="<?php echo ($canChange) ? JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzberichtform.publish&id=' . $item->id . '&state=' . (($item->state + 1) % 2), false, 2) : '#'; ?>">
                         <?php if ($item->state == 1): ?>
                             <i class="icon-publish"></i>
                         <?php else: ?>
@@ -248,7 +298,7 @@ defined('_JEXEC') or die;
                     </a>
 					<?php endif; ?>
 						<?php if ($canEdit): ?>
-							<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzberichtform.edit&id=' . $item->id, false, 2); ?>" class="btn btn-mini" type="button"><i class="icon-edit" ></i></a>
+							<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzberichtform.edit&layout=edit&id=' . $item->id, true, 2); ?>" class="btn btn-mini eiko_action_button" type="button"><i class="icon-edit" ></i></a>
 						<?php endif; ?>
 						<?php if ($canDelete): ?>
 							<button data-item-id="<?php echo $item->id; ?>" class="btn btn-mini delete-button" type="button"><i class="icon-trash" ></i></button>
@@ -263,31 +313,25 @@ defined('_JEXEC') or die;
     </tbody>
 	
     <tfoot>
-    				<!--Prüfen, ob Pagination angezeigt werden soll-->
+    				<!--PrÃ¼fen, ob Pagination angezeigt werden soll-->
     				<?php if ($this->params->get('display_home_pagination')) : ?>
 					<tr>
-					<td colspan="<?php echo isset($this->items[0]) ? count(get_object_vars($this->items[0])) : 10; ?>">
+					<td colspan="<?php echo $eiko_col; ?>">
                     	<form action="#" method=post>
 						<?php echo $this->pagination->getListFooter(); ?><!--Pagination anzeigen-->
 						</form> 
 					</td></tr>
-		   			<?php endif;?><!--Prüfen, ob Pagination angezeigt werden soll   ENDE -->
+		   			<?php endif;?><!--PrÃ¼fen, ob Pagination angezeigt werden soll   ENDE -->
 		
 		<?php if (!$this->params->get('eiko')) : ?>
         <tr><!-- Bitte das Copyright nicht entfernen. Danke. -->
-        <td colspan="<?php echo isset($this->items[0]) ? count(get_object_vars($this->items[0])) : 10; ?>">
-			<span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2015 by Ralf Meyer ( <a class="copyright_link" href="http://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a> )</span></td>
+        <td colspan="<?php echo $eiko_col; ?>">
+			<span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2017 by Ralf Meyer ( <a class="copyright_link" href="https://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a> )</span></td>
         </tr>
 	<?php endif; ?>
     </tfoot>
 
-    </table>
 
-    <?php if ($canCreate): ?>
-        <a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzberichtform.edit&id=0', false, 2); ?>"
-           class="btn btn-success btn-small"><i
-                class="icon-plus"></i> <?php echo JText::_('Einsatz einreichen'); ?></a>
-    <?php endif; ?>
 
     <input type="hidden" name="task" value=""/>
     <input type="hidden" name="boxchecked" value="0"/>
@@ -297,11 +341,11 @@ defined('_JEXEC') or die;
 </form>
 
     <?php if ($this->params->get('display_home_map')) : ?>
-    <tr><td colspan="<?php echo $col;?>" class="eiko_td_gmap_main_1">
+    <tr><td colspan="<?php echo $eiko_col;?>" class="eiko_td_gmap_main_1">
     <h4>Einsatzgebiet</h4>
 			<?php if ($this->params->get('gmap_action','0') == '1') :?>
   			<div id="map-canvas" style="width:100%; height:<?php echo $this->params->get('home_map_height','300px');?>;">
-    		<noscript>Dieser Teil der Seite erfordert die JavaScript Unterstützung Ihres Browsers!</noscript>
+    		<noscript>Dieser Teil der Seite erfordert die JavaScript UnterstÃ¼tzung Ihres Browsers!</noscript>
 			</div>
             <?php endif;?>
 			<?php if ($this->params->get('gmap_action','0') == '2') :?>
@@ -309,11 +353,12 @@ defined('_JEXEC') or die;
 				<!--<div id="descriptionToggle" onClick="toggleInfo()">Informationen zur Karte anzeigen</div>
 				<div id="description" class="">Einsatzkarte</div>-->
    				<div id="map" style="width:100%; height:<?php echo $this->params->get('home_map_height','300px');?>;"></div> 
-    		<noscript>Dieser Teil der Seite erfordert die JavaScript Unterstützung Ihres Browsers!</noscript>
+    		<noscript>Dieser Teil der Seite erfordert die JavaScript UnterstÃ¼tzung Ihres Browsers!</noscript>
             <?php endif;?>
             </td></tr>
     <?php endif;?>
 
+    </table>
 
 
 <?php echo '<span class="mobile_hide_320">'.$this->modulepos_1.'</span>'; ?>
@@ -327,7 +372,7 @@ defined('_JEXEC') or die;
 
     function deleteItem() {
         var item_id = jQuery(this).attr('data-item-id');
-        if (confirm("<?php echo JText::_('Möchten Sie diesen Einsatzbericht wirklich löschen ?'); ?>")) {
+        if (confirm("<?php echo JText::_('COM_EINSATZKOMPONENTE_WIRKLICH_LOESCHEN'); ?>")) {
             window.location.href = '<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzberichtform.remove&id=', false, 2) ?>' + item_id;
         }
     }

@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // no direct access
 defined('_JEXEC') or die;
@@ -59,6 +59,8 @@ JFilterOutput::objectHtmlSafe($reports);
 	 
 $Monat ='';
 $selectedYear = '';
+$show_all = $this->params->get('show_all','true');
+
 		
 // Gmap - Konfiguration laden
 $gmapconfig = $this->gmap_config; 
@@ -69,7 +71,7 @@ $gmapconfig = $this->gmap_config;
 		if ($this->params->get('display_einsatzkarte_organisationen','1')) :
 			// Feuerwehrliste aus DB holen
 			$db = JFactory::getDBO();
-			$query = 'SELECT id, name,gmap_icon_orga,gmap_latitude,gmap_longitude,link,detail1 FROM `#__eiko_organisationen` WHERE state=1 ORDER BY `id`';
+			$query = 'SELECT id, name,gmap_icon_orga,gmap_latitude,gmap_longitude,link,detail1 FROM #__eiko_organisationen WHERE state=1 ORDER BY id';
 			$db->setQuery($query);
 			$orga = $db->loadObjectList();
 
@@ -156,7 +158,7 @@ endif;
   function getYear()
   {
 	$db = JFactory::getDBO();
-	$query = 'SELECT Year(date1) as id, Year(date1) as title FROM `#__eiko_einsatzberichte` WHERE gmap="1" AND state = "1" GROUP BY title';
+	$query = 'SELECT Year(date1) as id, Year(date1) as title FROM #__eiko_einsatzberichte WHERE gmap="1" AND state = "1" GROUP BY title';
 	$db->setQuery($query);
 	return $db->loadObjectList();
   }
@@ -443,13 +445,13 @@ var infowindow = new google.maps.InfoWindow(
 		{
 			 if(years[i].value == now.getFullYear()-1)
 				{
-				years[i].selected = true;	
-                document.getElementById("selectstartmonth").options[0].selected = true;
+				years[i].selected = <?php echo $show_all;?>;	
+                document.getElementById("selectstartmonth").options[0].selected = <?php echo $show_all;?>;
 				}
 			if(years[i].value == now.getFullYear())
-				years[i].selected = true;
+				years[i].selected = <?php echo $show_all;?>;
 			if(now.getMonth == 0)
-				years[i-1].selected = true;
+				years[i-1].selected = <?php echo $show_all;?>;
 		}
         document.getElementById("selectendmonth").options[now.getMonth()].selected = true;
         years = document.getElementById("selectendyear").options;
@@ -535,7 +537,7 @@ polygon.setMap(map);
 		<div class="well eiko_gmap_sidebar span6" id="side_bar" style="height: <?php echo $this->params->get('einsatzkarte_map_height','450');?>px;width:98%;margin-left:0px;"></div>	
 		<?php endif; ?>
 		<?php if ($hide) :?>
-		<div><span class="glyphicon glyphicon-info-sign"></span> Es werden insg. <?php echo $hide;?> Einsätze werden aufgrund der Privatsphäre in dieser Karte nicht berücksichtigt.</div>
+		<div class="eiko_privat"><span class="glyphicon glyphicon-info-sign"></span> Es werden insg. <?php echo $hide;?> Einsätze werden aufgrund der Privatsphäre in dieser Karte nicht berücksichtigt.</div>
 		<?php endif;?>
 
 		<div class="row-fluid">
@@ -546,7 +548,7 @@ polygon.setMap(map);
 		<?php if (!$this->params->get('eiko')) : ?>
 		<div class="row-fluid">
 				<div class="span12"><!-- Bitte das Copyright nicht entfernen. Danke. -->
-					<span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2013 by Ralf Meyer ( <a class="copyright_link" href="http://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a> )</span>
+					<span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2017 by Ralf Meyer ( <a class="copyright_link" href="https://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a> )</span>
 				</div>
 		</div>
 

@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 defined('_JEXEC') or die;
 jimport('joomla.application.component.modellist');
@@ -35,14 +35,22 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 
         // Initialise variables.
         $app = JFactory::getApplication();
+		$params = $app->getParams('com_einsatzkomponente');
+		$page_limit = $params->get('display_home_pagination_limit','5');
+		if (!$page_limit) : $page_limit = $app->getCfg('list_limit'); endif;
 
         // List state information
-        $limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+        $limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $page_limit);
         $this->setState('list.limit', $limit);
-
+		
+if ($limit != '0') :   
         $limitstart = $app->input->getInt('limitstart', 0);
         $this->setState('list.start', $limitstart);
+else:  	$limitstart = '0';
+		$this->setState('list.start', $limitstart);
+endif;
 
+//echo 'limit:'.$limit.'<br/>limitstart:'.$limitstart;
         if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
         {
             foreach ($list as $name => $value)
@@ -137,7 +145,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
                 )
         );
         
-        $query->from('`#__eiko_einsatzberichte` AS a');
+        $query->from('#__eiko_einsatzberichte AS a');
         
 		// Join over the foreign key 'auswahl_orga'
 		$query->select('dep.id AS mission_orga');
@@ -157,6 +165,9 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 		// Join over the user field 'created_by'
 		$query->select('created_by.name AS created_by');
 		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
+		// Join over the user field 'modified_by'
+		$query->select('modified_by.name AS modified_by');
+		$query->join('LEFT', '#__users AS modified_by ON modified_by.id = a.modified_by');
 		// Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
@@ -170,6 +181,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
         
 		//Filtering data1
 		//Filtering alerting
+		
 		//Filtering updatedate
 		$filter_updatedate_from = $this->state->get("filter.updatedate.from");
 		if ($filter_updatedate_from) {
@@ -179,6 +191,17 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 		if ($filter_updatedate_to) {
 			$query->where("a.updatedate <= '".$filter_updatedate_to."'");
 		}
+		
+		//Filtering createdate
+		$filter_createdate_from = $this->state->get("filter.createdate.from");
+		if ($filter_createdate_from) {
+			$query->where("a.createdate >= '".$filter_createdate_from."'");
+		}
+		$filter_createdate_to = $this->state->get("filter.createdate.to");
+		if ($filter_createdate_to) {
+			$query->where("a.createdate <= '".$filter_createdate_to."'");
+		}
+
 		//Filtering auswahl_orga
 		$filter_auswahl_orga = $this->state->get("filter.auswahl_orga");
 		if ($filter_auswahl_orga) {
@@ -193,8 +216,14 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 		$filter_created_by = $this->state->get("filter.created_by");
 		if ($filter_created_by) {
 			$query->where("a.created_by = '".$filter_created_by."'");
+		}      
+		
+		//Filtering modified_by
+		$filter_modified_by = $this->state->get("filter.modified_by");
+		if ($filter_modified_by) {
+			$query->where("a.modified_by = '".$filter_modified_by."'");
 		}        
-        
+
         return $query;
     }
 }

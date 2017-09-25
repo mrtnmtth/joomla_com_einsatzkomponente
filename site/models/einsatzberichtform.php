@@ -38,7 +38,14 @@ class EinsatzkomponenteModelEinsatzberichtForm extends JModelForm
             $id = JFactory::getApplication()->input->get('id');
             JFactory::getApplication()->setUserState('com_einsatzkomponente.edit.einsatzbericht.id', $id);
         }
+        if (JFactory::getApplication()->input->get('addlink') == '1') {
+			$id = '';
+            JFactory::getApplication()->setUserState('com_einsatzkomponente.edit.einsatzbericht.id', '');
+		}
+		
 		$this->setState('einsatzbericht.id', $id);
+		
+		
 		// Load the parameters.
         $params = $app->getParams();
         $params_array = $params->toArray();
@@ -173,6 +180,19 @@ class EinsatzkomponenteModelEinsatzberichtForm extends JModelForm
 	{
 		$data = $this->getData(); 
         
+			$data->auswahl_orga = implode(',',$array);
+			if ($data->auswahl_orga == '') : // Vorbelegung Organisationen
+				//$db = JFactory::getDbo();
+				//$db->setQuery('SELECT id,ffw FROM #__eiko_organisationen WHERE ffw="1" LIMIT 1');
+				//$standard = $db->loadResult();
+				//$data->auswahl_orga = $standard['id'];
+			$params = JComponentHelper::getParams('com_einsatzkomponente');
+			$data->auswahl_orga = 	$params->get('pre_auswahl_orga','');
+			endif;
+		
+			$params = JComponentHelper::getParams('com_einsatzkomponente');
+			$data->watermark_image = 	$params->get('watermark_image','');
+			
         return $data;
 	}
 	/**
@@ -192,12 +212,14 @@ class EinsatzkomponenteModelEinsatzberichtForm extends JModelForm
             $authorised = $user->authorise('core.edit', 'com_einsatzkomponente.einsatzbericht'.$id) || $authorised = $user->authorise('core.edit.own', 'com_einsatzkomponente.einsatzbericht'.$id);
             if($user->authorise('core.edit.state', 'com_einsatzkomponente.einsatzbericht'.$id) !== true && $state == 1){ //The user cannot edit the state of the item.
                 $data['state'] = 0;
+                $data['einsatzticker'] = 0;
             }
         } else {
             //Check the user can create new items in this section
             $authorised = $user->authorise('core.create', 'com_einsatzkomponente');
             if($user->authorise('core.edit.state', 'com_einsatzkomponente.einsatzbericht'.$id) !== true && $state == 1){ //The user cannot edit the state of the item.
                 $data['state'] = 0;
+                $data['einsatzticker'] = 0;
             }
         }
         if ($authorised !== true) {

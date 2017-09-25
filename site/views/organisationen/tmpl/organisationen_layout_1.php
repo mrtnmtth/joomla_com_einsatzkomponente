@@ -1,10 +1,10 @@
 <?php
 /**
- * @version    CVS: 3.9
- * @package    Com_Einsatzkomponente
- * @author     Ralf Meyer <ralf.meyer@einsatzkomponente.de>
- * @copyright  Copyright (C) 2015. Alle Rechte vorbehalten.
- * @license    GNU General Public License Version 2 oder später; siehe LICENSE.txt
+ * @version     3.15.0
+ * @package     com_einsatzkomponente
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // No direct access
 defined('_JEXEC') or die;
@@ -13,10 +13,6 @@ $lang = JFactory::getLanguage();
 $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
 
 
-JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
-JHtml::_('bootstrap.tooltip');
-JHtml::_('behavior.multiselect');
-JHtml::_('formbehavior.chosen', 'select');
 
 $user       = JFactory::getUser();
 $userId     = $user->get('id');
@@ -44,16 +40,16 @@ require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers
 				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_ORGANISATIONEN_NAME', 'a.name', $listDirn, $listOrder); ?>
 				</th>
 				<th class=''>
-				<?php echo JHtml::_('grid.sort',  'Beschreibung', 'a.detail1', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('grid.sort',  'COM_EINSATZKOMPONENTE_DESC', 'a.detail1', $listDirn, $listOrder); ?>
 				</th>
 				<th class=''>
 				<?php echo JHtml::_('grid.sort',  '', 'a.detail2', $listDirn, $listOrder); ?>
 				</th>
-				<th><?php echo 'Letzter Eintrag'; ?>:</th>
+				<th><?php echo JText::_('COM_EINSATZKOMPONENTE_LETZTER_EINTRAG'); ?></th>
 
 							<?php if ($canEdit || $canDelete): ?>
 					<th class="center">
-				<?php echo JText::_('Edit'); ?>
+				<?php echo JText::_('COM_EINSATZKOMPONENTE_ADMIN_ACTION'); ?>
 				</th>
 				<?php endif; ?>
 
@@ -67,7 +63,7 @@ require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers
 		</tr>
 <?php if (!$this->params->get('eiko')) : ?>
         <tr><!-- Bitte das Copyright nicht entfernen. Danke. -->
-            <th colspan="<?php echo isset($this->items[0]) ? count(get_object_vars($this->items[0])) : 10; ?>"><span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2015 by Ralf Meyer ( <a class="copyright_link" href="http://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a> )</span></th>
+            <th colspan="<?php echo isset($this->items[0]) ? count(get_object_vars($this->items[0])) : 10; ?>"><span class="copyright">Einsatzkomponente V<?php echo $this->version; ?>  (C) 2016 by Ralf Meyer ( <a class="copyright_link" href="https://einsatzkomponente.de" target="_blank">www.einsatzkomponente.de</a> )</span></th>
         </tr>
 	<?php endif; ?>
 		</tfoot>
@@ -105,7 +101,7 @@ require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers
 				$total = $database->loadObjectList();
 				?>
 				<?php if ($total) : ?>
-				<td><a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&id='.(int) $total[0]->id); ?>"><?php echo date("d.m.Y", strtotime($total[0]->date1));?></a></td>
+				<td><a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&Itemid='.$this->params->get('homelink','').'&id='.(int) $total[0]->id); ?>"><?php echo date("d.m.Y", strtotime($total[0]->date1));?></a></td>
 				<?php else: ?>
 				<td><?php echo '-'; ?></td>
 				<?php endif;?>
@@ -140,7 +136,7 @@ require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers
 				
 		<?php if ($this->params->get('display_orga_fhz_links','1')) :?>
 					<?php if (!$value->link) :?>
-					<a target="_self" href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzfahrzeug&id=' . (int) $value->id); ?>">
+					<a target="_self" href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzfahrzeug&Itemid='.$this->params->get('vehiclelink','').'&id=' . (int) $value->id); ?>">
 					<img  class="img-rounded eiko_img_einsatzbild_main_1" style="margin-right:10px;width:<?php echo $this->params->get('display_home_image_width','80px');?>;" src="<?php echo JURI::Root();?><?php echo $value->image;?>" title="<?php echo $value->name;?>"/>
 					</a>
 					<?php else :?>
@@ -164,7 +160,7 @@ require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers
 		<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=organisationform.edit&id=0', false, 2); ?>"
 		   class="btn btn-success btn-small"><i
 				class="icon-plus"></i>
-			<?php echo JText::_('Neue Organisation anlegen'); ?></a>
+			<?php echo JText::_('COM_EINSATZKOMPONENTE_ADD'); ?></a>
 	<?php endif; ?>
 
 	<input type="hidden" name="task" value=""/>
@@ -183,7 +179,7 @@ require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers
 	function deleteItem() {
 		var item_id = jQuery(this).attr('data-item-id');
 		<?php if($canDelete) : ?>
-		if (confirm("<?php echo JText::_('COM_EINSATZKOMPONENTE_DELETE_MESSAGE'); ?>")) {
+		if (confirm("<?php echo JText::_('COM_EINSATZKOMPONENTE_WIRKLICH_LOESCHEN'); ?>")) {
 			window.location.href = '<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=organisationform.remove&id=', false, 2) ?>' + item_id;
 		}
 		<?php endif; ?>

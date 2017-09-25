@@ -55,7 +55,15 @@
 			id="einsatzbericht_image_klein"
             directory="com_einsatzkomponente/einsatzbilder" 
 		/>  
-
+		
+       <field name="watermark_image" type="media"
+			label="COM_EINSATZKOMPONENTE_OPTION_WASSERZEICHEN_WAEHLEN" 
+			description="Sie können Wasserzeichen hinzufügen. Die Datei muss zwingend eine PNG-Datei sein !!" 
+            filter="raw"
+		    preview="true"
+			default ="images/com_einsatzkomponente/watermark/watermark.png"
+            directory="com_einsatzkomponente/watermark" />   
+			
        <field name="address" type="einsatzort"
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_ADDRESS"
             description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_ADDRESS" 
@@ -68,23 +76,26 @@
        <field name="date1" type="calendar" class="inputbox"
             required="true" 
 		    format="%Y-%m-%d %H:%M:00"
-            default="0000-00-00 00:00:00" 
+            default="NOW" 
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_DATE1"
             description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_DATE1" 
-            filter="safehtml" /> 
+			filter="safehtml"
+			/> 
        <field name="date2" type="calendar" class="inputbox"
 	   	    format="%Y-%m-%d %H:%M:00"
             default="0000-00-00 00:00:00" 
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_DATE2"
             description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_DATE2" 
-            filter="safehtml" /> 
+			filter="safehtml"
+			/> 
 		 
        <field name="date3" type="calendar" class="inputbox"
             format="%Y-%m-%d %H:%M:00"
             default="0000-00-00 00:00:00" 
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_DATE3"
             description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_DATE3" 
-            filter="safehtml" /> 
+			filter="safehtml"
+			/> 
 		
        <field name="summary" type="summary"
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_SUMMARY"
@@ -125,8 +136,8 @@
             filter="safehtml" /> 
 			
        <field name="desc" type="editor"
-            label="ausführlicher Einsatzbericht"
-            description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_DESC" 
+            label="COM_EINSATZKOMPONENTE_AUSFUEHRLICHER_EINSATZBERICHT"
+            description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_DESC"  
             width="60%"
             height="350px"
 			buttons="true"
@@ -275,10 +286,10 @@
             disabled="0"
             filter="raw"
 			multiple="false"
-			label="Einsatzort auf Karte :"
-			description="Hier können Sie einstellen, ob die Einsatzort-Markierung in diesem Einsatzbericht angezeigt werden soll.">
-				<option	value="0">Verbergen</option>
-				<option	value="1">Anzeigen</option>
+			label="COM_EINSATZKOMPONENTE_EINSATZORT_AUF_KARTE"
+			description="COM_EINSATZKOMPONENTE_EINSATZORT_AUF_KARTE_DESC">
+				<option	value="0">JNO</option>
+				<option	value="1">JYES</option>
 	   </field>
 
        <field name="status" 
@@ -295,10 +306,18 @@
         </field> 
 
        <field name="created_by" type="createdby" default="" 
-            label="Erstellt / Bearbeitet von"
+            label="Erstellt von"
             description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_CREATED_BY"  /> 
  
 		<field name="filter_created_by" 
+		     type="user" 
+			 onchange="this.form.submit();" /> 
+			 
+       <field name="modified_by" type="modifiedby" default="" 
+            label="Bearbeitet von"
+            description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_MODIFIED_BY"  /> 
+ 
+		<field name="filter_modified_by" 
 		     type="user" 
 			 onchange="this.form.submit();" /> 
 			 
@@ -306,25 +325,29 @@
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_UPDATEDATE"
             description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_UPDATEDATE"  /> 
 			
+       <field name="createdate" type="timecreated" default="" 
+            label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_CREATEDATE"
+            description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_CREATEDATE"  /> 
+			
        <field name="counter" type="text"
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_COUNTER"
             description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_COUNTER" 
             default="0"
-            readonly="false"
+            readonly="true"
             class="eiko_counter"
             filter="int"
             size="20" /> 
 			
        <field name="einsatzticker" 
 			type="list"
-        	description="Hier können Sie Einstellen, ob nach dem abspeichern des Berichtes, ein Joomla-Artikel daraus erstellt werden soll."
-            label="Joomla-Artikel erstellen ?" 
+        	description="COM_EINSATZKOMPONENTE_JOOMLA_ARTICLE_DESC"
+            label="COM_EINSATZKOMPONENTE_JOOMLA_ARTICLE" 
             default="0"
             class="btn-group"
             filter="raw"
             multiple="false">
-                <option value="0">Nein</option>
-                <option value="1">Ja</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
         </field> 
 
 			

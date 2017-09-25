@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @version     3.0.7
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2015. Alle Rechte vorbehalten.
- * @license     GNU General Public License Version 2 oder später; siehe LICENSE.txt
- * @author      Ralf Meyer <ralf.meyer@mail.de> - http://einsatzkomponente.de
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 defined('_JEXEC') or die;
 
@@ -37,6 +37,7 @@ class EinsatzkomponenteModelAusruestungen extends JModelList
                 'created_by', 'a.created_by',
                 'ordering', 'a.ordering',
                 'state', 'a.state',
+                'params', 'a.params',
 
 			);
 		}
@@ -190,7 +191,7 @@ if (empty($list['direction']))
 				)
 			);
 
-		$query->from('`#__eiko_ausruestung` AS a');
+		$query->from('#__eiko_ausruestung AS a');
 
 		
     // Join over the users for the checked out user.
@@ -255,7 +256,33 @@ if (!JFactory::getUser()->authorise('core.edit.state', 'com_einsatzkomponente'))
 
 	public function getItems()
 	{
-		$items = parent::getItems();
+		//$items = parent::getItems();
+		
+		$store = $this->getStoreId();
+
+		// Try to load the data from internal storage.
+		if (isset($this->cache[$store]))
+		{
+			return $this->cache[$store];
+		}
+
+		// Load the list items.
+		$query = $this->_getListQuery();
+
+		try
+		{
+			$items = $this->_getList($query, $this->getStart(), $this->getState('list.limit'));
+		}
+		catch (RuntimeException $e)
+		{
+			$this->setError($e->getMessage());
+
+			return false;
+		}
+
+
+		// Add the items to the internal cache.
+		$this->cache[$store] = $items;
 
 		return $items;
 	}

@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // No direct access
 defined('_JEXEC') or die;
@@ -88,16 +88,23 @@ class EinsatzkomponenteViewEinsatzkarte extends JViewLegacy
         // Import CSS
 		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/einsatzkomponente.css');
 		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/responsive.css');
-		if ($this->params->get('display_einsatzkarte_bootstrap','0')) :
- 		$document->addScript('components/com_einsatzkomponente/assets/bootstrap/js/bootstrap.min.js');	
- 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap.min.css');
- 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap-responsive.min.css');
+		
+		// Bootstrap laden
+		JHtml::_('behavior.framework', true);
+		
+		if ($this->params->get('display_einsatzkarte_bootstrap','0') == '1') :
+		JHtml::_('bootstrap.framework');
+		$document->addStyleSheet($this->baseurl . '/media/jui/css/bootstrap.min.css');
+		$document->addStyleSheet($this->baseurl.'/media/jui/css/icomoon.css');
 		endif;
+		if ($this->params->get('display_einsatzkarte_bootstrap','0') == '2') :
+		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/bootstrap/bootstrap.min.css');
+		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/bootstrap/bootstrap-responsive.min.css');
+		endif;
+
+		// Import CSS aus Optionen
 		$document->addStyleDeclaration($this->params->get('gmap_css','')); 
 		
-		
-		//$document->addStyleSheet('components/com_einsatzkomponente/assets/jquery/JQRangeSlider/iThing.css');
- 		//$document->addScript('components/com_einsatzkomponente/assets/jquery/JQRangeSlider/jQDateRangeSlider-withRuler-min.js');	
 		
 		
 

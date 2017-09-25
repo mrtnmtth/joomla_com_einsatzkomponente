@@ -1,10 +1,10 @@
 <?php
 /**
- * @version    CVS: 3.9
- * @package    Com_Einsatzkomponente
- * @author     Ralf Meyer <ralf.meyer@einsatzkomponente.de>
- * @copyright  Copyright (C) 2015. Alle Rechte vorbehalten.
- * @license    GNU General Public License Version 2 oder später; siehe LICENSE.txt
+ * @version     3.15.0
+ * @package     com_einsatzkomponente
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // No direct access
 defined('_JEXEC') or die;
@@ -247,7 +247,7 @@ defined('_JEXEC') or die;
 		<a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzfahrzeugform.edit&id=0', false, 2); ?>"
 		   class="btn btn-success btn-small"><i
 				class="icon-plus"></i>
-			<?php echo JText::_('COM_EINSATZKOMPONENTE_ADD_ITEM'); ?></a>
+			<?php echo JText::_('COM_EINSATZKOMPONENTE_ADD'); ?></a>
 	<?php endif; ?>
 
 	<input type="hidden" name="task" value=""/>
@@ -266,7 +266,7 @@ defined('_JEXEC') or die;
 	function deleteItem() {
 		var item_id = jQuery(this).attr('data-item-id');
 		<?php if($canDelete) : ?>
-		if (confirm("<?php echo JText::_('COM_EINSATZKOMPONENTE_DELETE_MESSAGE'); ?>")) {
+		if (confirm("<?php echo JText::_('COM_EINSATZKOMPONENTE_WIRKLICH_LOESCHEN'); ?>")) {
 			window.location.href = '<?php echo JRoute::_('index.php?option=com_einsatzkomponente&task=einsatzfahrzeugform.remove&id=', false, 2) ?>' + item_id;
 		}
 		<?php endif; ?>

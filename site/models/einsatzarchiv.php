@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @version     3.1.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2014. Alle Rechte vorbehalten.
- * @license     GNU General Public License Version 2 oder später; siehe LICENSE.txt
- * @author      Ralf Meyer <ralf.meyer@einsatzkomponente.de> - http://einsatzkomponente.de
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 defined('_JEXEC') or die;
 
@@ -62,6 +62,7 @@ class EinsatzkomponenteModelEinsatzarchiv extends JModelList
                 'presse3_label', 'a.presse3_label',
                 'presse3', 'a.presse3',
                 'updatedate', 'a.updatedate',
+                'createdate', 'a.createdate',
                 'einsatzticker', 'a.einsatzticker',
                 'department', 'a.department',
                 'notrufticker', 'a.notrufticker',
@@ -70,6 +71,8 @@ class EinsatzkomponenteModelEinsatzarchiv extends JModelList
                 'counter', 'a.counter',
                 'state', 'a.state',
                 'created_by', 'a.created_by',
+                'modified_by', 'a.modified_by',
+                'params', 'a.params',
 
             );
         }
@@ -89,9 +92,11 @@ class EinsatzkomponenteModelEinsatzarchiv extends JModelList
 
         // Initialise variables.
         $app = JFactory::getApplication();
-
+		$params = $app->getParams('com_einsatzkomponente');
+		$page_limit = $params->get('display_home_pagination_limit','5');
+		if (!$page_limit) : $page_limit = $app->getCfg('list_limit'); endif;
         // List state information
-        $limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+        $limit = $app->getUserStateFromRequest('global.list.limit', 'limit',$page_limit); 
         $this->setState('list.limit', $limit);
 
         $limitstart = $app->input->getInt('limitstart', 0);
@@ -227,9 +232,9 @@ endif;
                         )
         );
 
-        $query->from('`#__eiko_einsatzberichte` AS a');
+        $query->from('#__eiko_einsatzberichte AS a');
 
-        
+
     // Join over the users for the checked out user.
     //$query->select('uc.name AS editor');
     //$query->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
@@ -269,9 +274,23 @@ endif;
 		$query->join('LEFT', '#__content AS #__content_1662648 ON #__content_1662648.id = a.article_id');
 		// Join over the created by field 'created_by'
 		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
-
-	    
-$query->where('a.state = 1');
+		// Join over the modified by field 'created_by'
+		$query->join('LEFT', '#__users AS modified_by ON modified_by.id = a.modified_by');
+		
+			$user = JFactory::getUser();
+			$userId = $user->get('id');
+			$canCreate = $user->authorise('core.create', 'com_einsatzkomponente');
+			$canEdit = $user->authorise('core.edit', 'com_einsatzkomponente');
+			$canCheckin = $user->authorise('core.manage', 'com_einsatzkomponente');
+			$canChange = $user->authorise('core.edit.state', 'com_einsatzkomponente');
+			$canDelete = $user->authorise('core.delete', 'com_einsatzkomponente');
+			
+		if ($canCreate or $canEdit or $canChange or $canDelete) :
+			$query->where('(a.state = 1 or a.state = 0)');
+			else:
+			$query->where('a.state = 1');
+			endif;
+			
 
         // Filter by search in title
         $search = $this->getState('filter.search');
@@ -321,11 +340,31 @@ $query->where('a.state = 1');
 		}
 
 		//Filtering auswahlorga
-		$filter_auswahlorga = $this->state->get("filter.auswahl_orga");
-		if ($filter_auswahlorga) {
-			$query->where("FIND_IN_SET(" . $filter_auswahlorga. ",a.auswahl_orga)");
-		}
+			$filter_auswahlorga = $this->state->get("filter.auswahl_orga"); 
+//			if ($filter_auswahlorga) {
+//			$query->where("FIND_IN_SET(" . $filter_auswahlorga. ",a.auswahl_orga)");
+//		 }
 
+		// Filter Menüparameter auswahlorga
+			if ($filter_auswahlorga) {
+			        $app = JFactory::getApplication();
+					$params = $app->getParams('com_einsatzkomponente');
+					$array = array();
+					if (count($filter_auswahlorga)>1) :
+					
+					$string = '';
+					foreach($filter_auswahlorga  as $value):
+					if (count($filter_auswahlorga)>1 AND $value) :
+					$string .= "FIND_IN_SET(" . $value. ",a.auswahl_orga) OR ";
+					endif;
+					endforeach;
+				$string = substr ( $string, 0, -3 );
+				$query->where($string);
+				else:
+				$query->where("FIND_IN_SET(" . $filter_auswahlorga['0']. ",a.auswahl_orga)");			
+				endif;
+			}
+		 
 		//Filtering vehicles
 		$filter_vehicles = $this->state->get("filter.vehicles");
 		if ($filter_vehicles) {
@@ -361,7 +400,12 @@ $query->where('a.state = 1');
 		if ($filter_created_by) {
 			$query->where("a.created_by = '".$db->escape($filter_created_by)."'");
 		}
-		
+		//Filtering created_by
+		$filter_modified_by = $this->state->get("filter.modified_by");
+		if ($filter_modified_by) {
+			$query->where("a.modified_by = '".$db->escape($filter_modified_by)."'");
+		}
+
 		//Filtering year
 		$filter_year = $this->state->get("filter.year");
 		if ($filter_year) {
@@ -428,7 +472,7 @@ $query->where('a.state = 1');
 					$query = $db->getQuery(true);
 					$query
 							->select('title,image')
-							->from('`#__eiko_alarmierungsarten`')
+							->from('#__eiko_alarmierungsarten')
 							->where('id = ' . $db->quote($db->escape($item->alerting)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -443,7 +487,7 @@ $query->where('a.state = 1');
 					$query = $db->getQuery(true);
 					$query
 							->select('title,image')
-							->from('`#__eiko_tickerkat`')
+							->from('#__eiko_tickerkat')
 							->where('id = ' . $db->quote($db->escape($item->tickerkat)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -457,43 +501,33 @@ $query->where('a.state = 1');
 					$db = JFactory::getDbo();
 					$query = $db->getQuery(true);
 					$query
-							->select('title,list_icon,marker')
-							->from('`#__eiko_einsatzarten`')
+							->select('id,title,list_icon,marker')
+							->from('#__eiko_einsatzarten')
 							->where('id = ' . $db->quote($db->escape($item->data1)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
 					if ($results) {
 						$item->data1 = $results->title;
+						$item->data1_id = $results->id;
 						$item->list_icon = $results->list_icon;
 						$item->marker = $results->marker;
 					}
 			}
 
-	//		if (isset($item->images) && $item->images != '') {
-	//			if(is_object($item->images)){
-	//				$item->images = JArrayHelper::fromObject($item->images);
-	//			}
-	//			$values = (is_array($item->images)) ? $item->images : explode(',',$item->images);
+			
 
-	//			$textValue = array();
-	//			foreach ($values as $value){
-	//				$db = JFactory::getDbo();
-	//				$query = $db->getQuery(true);
-	//				$query
-	//						->select('image')
-	//						->from('`#__eiko_images`')
-	//						->where('id = ' . $db->quote($db->escape($value)));
-	//				$db->setQuery($query);
-	//				$results = $db->loadObject();
-	//				if ($results) {
-	//					$textValue[] = $results->image;
-	//				}
-	//			}
-
-	//		$item->images = !empty($textValue) ? implode(', ', $textValue) : $item->images;
-
-	//		}
-
+					$db = JFactory::getDbo();
+					$query = $db->getQuery(true);
+					$query
+							->select('count(image)')
+							->from('#__eiko_images')
+							->where('report_id = ' . $item->id);
+					$db->setQuery($query);
+					$item->images = $db->loadResult();
+			if ($item->image) { $item->images = $item->images +1;}
+					
+					
+					
 			if (isset($item->auswahl_orga) && $item->auswahl_orga != '') {
 				if(is_object($item->auswahl_orga)){
 					$item->auswahl_orga = JArrayHelper::fromObject($item->auswahl_orga);
@@ -506,7 +540,7 @@ $query->where('a.state = 1');
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_organisationen`')
+							->from('#__eiko_organisationen')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -531,7 +565,7 @@ $query->where('a.state = 1');
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_fahrzeuge`')
+							->from('#__eiko_fahrzeuge')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -556,7 +590,7 @@ $query->where('a.state = 1');
 	//				$query = $db->getQuery(true);
 	//				$query
 	//						->select('name')
-	//						->from('`#__eiko_ausruestung`')
+	//						->from('#__eiko_ausruestung')
 	//						->where('id = ' . $db->quote($db->escape($value)));
 	//				$db->setQuery($query);
 	//				$results = $db->loadObject();
@@ -581,7 +615,7 @@ $query->where('a.state = 1');
 	//				$query = $db->getQuery(true);
 	//				$query
 	//						->select('name')
-	//						->from('`#__eiko_fahrzeuge`')
+	//						->from('#__eiko_fahrzeuge')
 	//						->where('id = ' . $db->quote($db->escape($value)));
 	//				$db->setQuery($query);
 	//				$results = $db->loadObject();
@@ -606,7 +640,7 @@ $query->where('a.state = 1');
 	//				$query = $db->getQuery(true);
 	//				$query
 	//						->select('name')
-	//						->from('`#__eiko_fahrzeuge`')
+	//						->from('#__eiko_fahrzeuge')
 	//						->where('id = ' . $db->quote($db->escape($value)));
 	//				$db->setQuery($query);
 	//				$results = $db->loadObject();
@@ -631,7 +665,7 @@ $query->where('a.state = 1');
 	//				$query = $db->getQuery(true);
 	//				$query
 	//						->select('name')
-	//						->from('`#__eiko_fahrzeuge`')
+	//						->from('#__eiko_fahrzeuge')
 	//						->where('id = ' . $db->quote($db->escape($value)));
 	//				$db->setQuery($query);
 	//				$results = $db->loadObject();
@@ -658,7 +692,7 @@ $query->where('a.state = 1');
 					$query = $db->getQuery(true);
 					$query
 							->select('title')
-							->from('`#__content`')
+							->from('#__content')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();

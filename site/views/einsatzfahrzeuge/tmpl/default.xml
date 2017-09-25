@@ -29,15 +29,17 @@
 		hr="true"
 />
 
-       <!--<field name="filter_fahrzeuge" type="sql" class="inputbox"
-            label="Fahrzeuge"
-            description="" 
-            required="false" 
-            query="SELECT `id`, `name` FROM `#__eiko_fahrzeuge` WHERE `state`='1' ORDER BY `ordering` ASC"
-			key_field="id"       		
-			value_field="name"
-			multiple="multiple"
-         /> -->
+		 
+		 
+       <!--<field name="filter_organisationen" type="sql"
+            label="COM_EINSATZKOMPONENTE_OPTION_FAHRZEUGE_FILTER_ORGANISATIONEN"
+            description="COM_EINSATZKOMPONENTE_OPTION_FAHRZEUGE_FILTER_ORGANISATIONEN_DESC" 
+			default = ''
+            filter="raw"
+			translate = "COM_EINSATZKOMPONENTE_OPTION_FAHRZEUGE_FILTER_ORGANISATIONEN_DESC_FILTER"
+            query="SELECT 0 AS id, 'COM_EINSATZKOMPONENTE_OPTION_FAHRZEUGE_FILTER_ORGANISATIONEN_DESC_FILTER' AS val UNION SELECT id, name AS val FROM #__eiko_organisationen" key_field="id" value_field="val"
+			multiple ="multiple"
+			/> --> 
 
 			 <field name="filter_fahrzeuge" type="einsatzfahrzeuge" class="inputbox"
             label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_VEHICLES"
@@ -51,6 +53,16 @@
 		hr="true"
 />
 
+       <field name="filter_orga" type="sql" class="inputbox"
+            label="COM_EINSATZKOMPONENTE_FORM_LBL_EINSATZBERICHT_AUSWAHLORGA"
+            description="COM_EINSATZKOMPONENTE_FORM_DESC_EINSATZBERICHT_AUSWAHLORGA" 
+            required="false" 
+            query="SELECT id, name FROM #__eiko_organisationen WHERE state='1' ORDER BY ordering ASC"
+			key_field="id"       		
+			value_field="name"
+			multiple="multiple"
+         /> 
+
 
 		</fieldset>
 		
@@ -62,7 +74,7 @@
 type="note" 
 class="alert alert-info" 
 label="Eigene Layouts verwenden" 
-description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu verwenden, die bei einem Update nicht überschrieben werden. Weitere Informationen hierzu gibt es im Forum http://www.einsatzkomponente.de" 
+description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu verwenden, die bei einem Update nicht überschrieben werden. Weitere Informationen hierzu gibt es im Forum https://www.einsatzkomponente.de" 
 />
 
 		 <field name="note_main_layout" 
@@ -123,7 +135,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="0"
-		label="Nur Feld `Beschreibung` anzeigen :"
+		label="Nur Feld Beschreibung anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -134,7 +146,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Link` anzeigen :"
+		label="Feld Link anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -146,7 +158,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="0"
-		label="Feld `Organisation` anzeigen :"
+		label="Feld Organisation anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -164,7 +176,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Detail 1` anzeigen :"
+		label="Feld Detail 1 anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -174,7 +186,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Detail 2` anzeigen :"
+		label="Feld Detail 2 anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -184,7 +196,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Detail 3` anzeigen :"
+		label="Feld Detail 3 anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -194,7 +206,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Detail 4` anzeigen :"
+		label="Feld Detail 4 anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -204,7 +216,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Detail 5` anzeigen :"
+		label="Feld Detail 5 anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -214,7 +226,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Detail 6` anzeigen :"
+		label="Feld Detail 6 anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -224,7 +236,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Detail 7` anzeigen :"
+		label="Feld Detail 7 anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -235,7 +247,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Beladung/Ausrüstung` anzeigen :"
+		label="Feld Beladung/Ausrüstung anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>
@@ -246,7 +258,7 @@ description="In der Einsatzkomponente V3 ist es möglich auch eigene Layouts zu 
 		type="radio"
 		class="btn-group"
 		default="1"
-		label="Feld `Beschreibung` anzeigen :"
+		label="Feld Beschreibung anzeigen :"
 		description="">
 			<option	value="0">Nein</option>
 			<option	value="1">JA</option>

@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 defined('JPATH_BASE') or die;
 jimport('joomla.form.formfield');
@@ -32,19 +32,19 @@ class JFormFieldSummary extends JFormField
 		$html = array();
 		$address = array();
         
-$id = JRequest::getVar('id', 0);
+$id = JFactory::getApplication()->input->getVar('id', 0);
 
 $params = JComponentHelper::getParams('com_einsatzkomponente');
 
 $db = JFactory::getDBO();
-$query = 'SELECT id, summary as title FROM `#__eiko_einsatzberichte` WHERE state="1" GROUP BY `summary` ASC';
+$query = 'SELECT id, summary as title FROM #__eiko_einsatzberichte WHERE state="1" GROUP BY summary ASC';
 $db->setQuery($query);
 $arrayDb = $db->loadObjectList();
 
 $html[]='<input class="control-label" type="text"  name="'. $this->name.'"  id="'.$this->id.'"  value="'.$this->value.'" size="'.$this->size.'" />';
 
 if (count($arrayDb)):
-$array[] = JHTML::_('select.option', '', 'Kurzbericht auswählen', 'title', 'title');
+$array[] = JHTML::_('select.option', '', JText::_('COM_EINSATZKOMPONENTE_KURZBERICHT_AUSWAEHLEN'), 'title', 'title');
 $array = array_merge($array, $arrayDb);
 $html[].= '<br/><br/>'.JHTML::_('select.genericlist', $array, "kurzbericht", 'onchange="changeText_kurzbericht()" ', 'title', 'title', '0');
 

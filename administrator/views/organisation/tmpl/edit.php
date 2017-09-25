@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // no direct access
 defined('_JEXEC') or die;
@@ -14,10 +14,7 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
-$version = new JVersion;
-if ($version->isCompatible('3.0')) :
 JHtml::_('formbehavior.chosen', 'select');
-endif;
 
 
 // Import CSS
@@ -68,7 +65,7 @@ if ($this->item->name)
             <div class="control-group">  
             
 <?php 
-	echo '<div class="control-label">';echo JText::_('Zugeordnete Fahrzeuge :');echo '</div>';
+	echo '<div class="control-label">';echo JText::_('COM_EINSATZKOMPONENTE_ZUGORDNETE_FAHRZEUGE').':';echo '</div>';
 	echo '<div class="controls"><ul class="adminformlist">';
 $database			= JFactory::getDBO();
 $query = 'SELECT * FROM #__eiko_fahrzeuge WHERE department = "'.$this->item->id.'" ORDER BY ordering,state ASC ' ;
@@ -82,14 +79,14 @@ $total = $database->loadObjectList();
 		if ($totale->detail2): echo ' ( '.$totale->detail2.' )'; endif;
 		if ($totale->detail1): echo ' '.$totale->detail1; endif;
 		echo '</a>';
-                if ($totale->state == 2): echo ' (Fahrzeug Au&szlig;er Dienst) '; endif;
-                if ($totale->state == 0): echo ' (Fahrzeug deaktiviert!) '; endif;
+                if ($totale->state == 2): echo JText::_('COM_EINSATZKOMPONENTE_FAHRZEUG_AUSSER_DIENST'); endif;
+                if ($totale->state == 0): echo JText::_('COM_EINSATZKOMPONENTE_FAHRZEUG_DEAKTIVIERT'); endif;
                 echo '</li>';
 		endforeach; 
 		}
 		else
 		{
-		echo '<span class="label label-important">Es wurden keine Fahrzeuge zugeordnet !!</span>';
+		echo '<span class="label label-important">'.JText::_('COM_EINSATZKOMPONENTE_KEINE_FAHRZEUGE').'</span>';
 		}
 echo '</ul></div></div>';
 }

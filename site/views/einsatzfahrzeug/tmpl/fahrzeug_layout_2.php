@@ -1,17 +1,16 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) by Ralf Meyer 2013. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // no direct access
 defined('_JEXEC') or die;
 ?>
 <?php if( $this->item ) : ?>
 
-<?php if ($this->item->state == '2'): $this->item->name = $this->item->name.' (a.D.)';endif;?>
 
 
 <table class="fahrzeug_box_1 table-striped" cellpadding="2">
@@ -29,7 +28,7 @@ defined('_JEXEC') or die;
 <p><img src="./<?php echo $this->item->image; ?>" alt="<?php echo $this->item->name; ?>" width="100%" class="eiko_fahrzeug_detail_image" /></p>
 </td>
 </tr>
-<tr class="fahrzeug_box_5" ><th class="fahrzeug_box_2" colspan="2">Fahrzeugdaten</th></tr>
+<tr class="fahrzeug_box_5" ><th class="fahrzeug_box_2" colspan="2"><?php echo JText::_('Fahrzeugdaten');?></th></tr>
 <?php if ($this->item->name) : ?>
 <tr class="fahrzeug_box_3">
 <td><strong>Abk&uuml;rzung:</strong></td>
@@ -43,13 +42,15 @@ defined('_JEXEC') or die;
 </tr>
 <?php endif; ?>
 
-<?php if ($this->item->department) : ?>
-<tr class="fahrzeug_box_3">
-<td><strong>Organisation:</strong></td>
-<td><?php echo $this->item->department; ?></td> 
-</tr>
-
+<?php if ($this->params->get('show_fahrzeuge_orga','1')) : ?>
+	<?php if ($this->item->department) : ?>
+	<tr class="fahrzeug_box_3">
+	<td><strong>Organisation:</strong></td>
+	<td><?php echo $this->item->department; ?></td> 
+	</tr>
+	<?php endif; ?>
 <?php endif; ?>
+
 <?php if ($this->item->detail2) : ?>
 <tr class="fahrzeug_box_3">
 <td><strong><?php echo $this->item->detail2_label; ?>:</strong></td>
@@ -81,32 +82,39 @@ defined('_JEXEC') or die;
 </tr>
 <?php endif; ?>
 
-<?php // letzter Einsatz   
-$database			= JFactory::getDBO();
-$query = 'SELECT * FROM #__eiko_einsatzberichte WHERE FIND_IN_SET ("'.$this->item->id.'",vehicles) AND (state ="1" OR state="2") ORDER BY date1 DESC' ;
-$database->setQuery( $query );
-$total = $database->loadObjectList();
-?>
-<?php if ($total) : ?>
-<tr class="fahrzeug_box_3">
-<td><strong>Letzter Eintrag:</strong></td>
-<td><a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&id='.(int) $total[0]->id); ?>"><?php echo date("d.m.Y", strtotime($total[0]->date1));?></a></td>
-</tr> 
-<?php endif; ?>
 
+<?php if ($this->params->get('show_fahrzeuge_einsatz','1')) : ?>
+	<?php // letzter Einsatz   
+	$database			= JFactory::getDBO();
+	$query = 'SELECT * FROM #__eiko_einsatzberichte WHERE FIND_IN_SET ("'.$this->item->id.'",vehicles) AND (state ="1" OR state="2") ORDER BY date1 DESC' ;
+	$database->setQuery( $query );
+	$total = $database->loadObjectList();
+	?>
+	<?php if ($total) : ?>
+	<tr class="fahrzeug_box_3">
+	<td><strong>Letzter Eintrag:</strong></td>
+	<td><a href="<?php echo JRoute::_('index.php?option=com_einsatzkomponente&view=einsatzbericht&Itemid='.$this->params->get('homelink','').'&id='.(int) $total[0]->id); ?>"><?php echo date("d.m.Y", strtotime($total[0]->date1));?></a></td>
+	</tr> 
+	<?php endif; ?>
+<?php endif; ?>
 
 </tbody>
 </table>
 <!--<h4><span><?php echo $this->item->detail1; ?> <?php echo $this->item->name; ?></span></h4>-->
 <br/>
 
-<!--Einsatzbericht anzeigen mit Plugin-Support-->           
-<?php jimport('joomla.html.content'); ?>  
-<?php $Desc = JHTML::_('content.prepare', $this->item->desc); ?>
-<table class="fahrzeug_box_7"><tr><td><?php echo $Desc; ?></td></tr></table>
+<?php if ($this->params->get('show_fahrzeug_beschreibung','1')) : ?>
+	<!--Einsatzbericht anzeigen mit Plugin-Support-->           
+	<?php jimport('joomla.html.content'); ?>  
+	<?php $Desc = JHTML::_('content.prepare', $this->item->desc); ?>
+	<table class="fahrzeug_box_7"><tr><td><?php echo $Desc; ?></td></tr></table>
+<?php endif; ?>
 
-
-
+	<table class="fahrzeug_box_7">
+	<tr><td>
+		<input type="button" class="btn eiko_back_button" value="<?php echo JText::_('COM_EINSATZKOMPONENTE_ZURUECK');?>" onClick="history.back();">
+	</td></tr>
+	</table>
     
 <?php else: ?>
     Could not load the item

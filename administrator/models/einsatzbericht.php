@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // No direct access.
 defined('_JEXEC') or die;
@@ -28,6 +28,10 @@ class EinsatzkomponenteModeleinsatzbericht extends JModelAdmin
 	 * @return	JTable	A database object
 	 * @since	1.6
 	 */
+	 
+	 
+   
+   
 	public function getTable($type = 'Einsatzbericht', $prefix = 'EinsatzkomponenteTable', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
@@ -63,6 +67,7 @@ class EinsatzkomponenteModeleinsatzbericht extends JModelAdmin
 		$data = JFactory::getApplication()->getUserState('com_einsatzkomponente.edit.einsatzbericht.data', array());
 		if (empty($data)) {
 			$data = $this->getItem();
+			
 			//Support for multiple or not foreign key field: auswahl_orga
 			$array = array();
 			foreach((array)$data->auswahl_orga as $value): 
@@ -71,6 +76,15 @@ class EinsatzkomponenteModeleinsatzbericht extends JModelAdmin
 				endif;
 			endforeach;
 			$data->auswahl_orga = implode(',',$array);
+			if ($data->auswahl_orga == '') : // Vorbelegung Organisationen
+				//$db = JFactory::getDbo();
+				//$db->setQuery('SELECT id,ffw FROM #__eiko_organisationen WHERE ffw="1" LIMIT 1');
+				//$standard = $db->loadResult();
+				//$data->auswahl_orga = $standard['id'];
+			$params = JComponentHelper::getParams('com_einsatzkomponente');
+			$data->auswahl_orga = 	$params->get('pre_auswahl_orga','');
+			endif;
+			
 			//Support for multiple or not foreign key field: vehicles
 			$array = array();
 			foreach((array)$data->vehicles as $value): 
@@ -79,6 +93,8 @@ class EinsatzkomponenteModeleinsatzbericht extends JModelAdmin
 				endif;
 			endforeach;
 			$data->vehicles = implode(',',$array);
+			
+			
 			//Support for multiple or not foreign key field: ausruestung
 			$array = array();
 			foreach((array)$data->ausruestung as $value): 
@@ -88,7 +104,11 @@ class EinsatzkomponenteModeleinsatzbericht extends JModelAdmin
 			endforeach;
 			$data->ausruestung = implode(',',$array);
 		}
-
+		
+			$params = JComponentHelper::getParams('com_einsatzkomponente');
+			
+			if(is_object($data)) $data->watermark_image = 	$params->get('watermark_image','');
+			
 		return $data;
 	}
 	/**

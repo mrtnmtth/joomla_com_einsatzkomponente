@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @version     3.1.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2014. Alle Rechte vorbehalten.
- * @license     GNU General Public License Version 2 oder später; siehe LICENSE.txt
- * @author      Ralf Meyer <ralf.meyer@einsatzkomponente.de> - http://einsatzkomponente.de
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 // No direct access
 defined('_JEXEC') or die;
@@ -49,13 +49,21 @@ class EinsatzkomponenteViewEinsatzarchiv extends JViewLegacy {
         // Import CSS
 		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/einsatzkomponente.css');
 		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/responsive.css');
+
+		// Bootstrap laden
+		JHtml::_('behavior.framework', true);
 		
-		if ($this->params->get('display_home_bootstrap','0')) :
-		// Import Bootstrap
- 		$document->addScript('components/com_einsatzkomponente/assets/bootstrap/js/bootstrap.min.js');	
- 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap.min.css');
- 		$document->addStyleSheet('components/com_einsatzkomponente/assets/bootstrap/css/bootstrap-responsive.min.css');
+		if ($this->params->get('display_home_bootstrap','0') == '1') :
+		JHtml::_('bootstrap.framework');
+		$document->addStyleSheet($this->baseurl . '/media/jui/css/bootstrap.min.css');
+		$document->addStyleSheet($this->baseurl.'/media/jui/css/icomoon.css');
 		endif;
+		if ($this->params->get('display_home_bootstrap','0') == '2') :
+		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/bootstrap/bootstrap.min.css');
+		$document->addStyleSheet('components/com_einsatzkomponente/assets/css/bootstrap/bootstrap-responsive.min.css');
+		endif;
+		
+		// Import CSS aus Optionen
 		$document->addStyleDeclaration($this->params->get('main_css','')); 
 		
 		
@@ -184,8 +192,8 @@ class EinsatzkomponenteViewEinsatzarchiv extends JViewLegacy {
 		$gmap_onload 		= $this->gmap_config->gmap_onload;
 		$zoom_control 		= 'true';
  		$document->addScript('components/com_einsatzkomponente/assets/osm/util.js');
-   		$document->addScript('http://www.openlayers.org/api/OpenLayers.js');				
-   		$document->addScript('http://www.openstreetmap.org/openlayers/OpenStreetMap.js');	
+   		$document->addScript('https://openlayers.org/api/OpenLayers.js');				
+   		$document->addScript('https://openstreetmap.org/openlayers/OpenStreetMap.js');	
  		$document->addStyleSheet('components/com_einsatzkomponente/assets/osm/map.css');		
  		$document->addStyleSheet('components/com_einsatzkomponente/assets/osm/ie_map.css');	
  		$document->addScript('components/com_einsatzkomponente/assets/osm/OpenLayers_Map_minZoom_maxZoom_Patch.js');

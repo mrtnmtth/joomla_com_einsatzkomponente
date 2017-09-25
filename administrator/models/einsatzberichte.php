@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 defined('_JEXEC') or die;
 
@@ -56,6 +56,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
                 'presse3_label', 'a.presse3_label',
                 'presse3', 'a.presse3',
                 'updatedate', 'a.updatedate',
+                'createdate', 'a.createdate',
                 'einsatzticker', 'a.einsatzticker',
                 'department', 'a.department',
                 'notrufticker', 'a.notrufticker',
@@ -64,6 +65,8 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
                 'counter', 'a.counter',
                 'state', 'a.state',
                 'created_by', 'a.created_by',
+                'modified_by', 'a.modified_by',
+                'params', 'a.params',
 
             );
         }
@@ -111,7 +114,9 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 
 		//Filtering created_by
 		$this->setState('filter.created_by', $app->getUserStateFromRequest($this->context.'.filter.created_by', 'filter_created_by', '', 'string'));
-
+		
+		//Filtering modified_by
+		$this->setState('filter.modified_by', $app->getUserStateFromRequest($this->context.'.filter.modified_by', 'filter_modified_by', '', 'string'));
 
         // Load the parameters.
         $params = JComponentHelper::getParams('com_einsatzkomponente');
@@ -157,7 +162,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
                         'list.select', 'DISTINCT a.*'
                 )
         );
-        $query->from('`#__eiko_einsatzberichte` AS a');
+        $query->from('#__eiko_einsatzberichte AS a');
 
         
 		// Join over the users for the checked out user
@@ -181,7 +186,9 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 		// Join over the user field 'created_by'
 		$query->select('created_by.name AS created_by');
 		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
-
+		// Join over the user field 'modified_by'
+		$query->select('modified_by.name AS modified_by');
+		$query->join('LEFT', '#__users AS modified_by ON modified_by.id = a.modified_by');
         
 
 		// Filter by published state
@@ -257,7 +264,12 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 		if ($filter_created_by) {
 			$query->where("a.created_by = '".$db->escape($filter_created_by)."'");
 		}
-
+		
+		//Filtering modified_by
+		$filter_modified_by = $this->state->get("filter.modified_by");
+		if ($filter_modified_by) {
+			$query->where("a.modified_by = '".$db->escape($filter_modified_by)."'");
+		}
 
         // Add the list ordering clause.
         $orderCol = $this->state->get('list.ordering');
@@ -283,7 +295,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('title')
-							->from('`#__eiko_alarmierungsarten`')
+							->from('#__eiko_alarmierungsarten')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -305,7 +317,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('title')
-							->from('`#__eiko_tickerkat`')
+							->from('#__eiko_tickerkat')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -326,12 +338,13 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$db = JFactory::getDbo();
 					$query = $db->getQuery(true);
 					$query
-							->select('title')
-							->from('`#__eiko_einsatzarten`')
+							->select('id,title')
+							->from('#__eiko_einsatzarten')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
 					if ($results) {
+						$oneItem->data1_id = $results->id;
 						$textValue[] = $results->title;
 					}
 				}
@@ -349,7 +362,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('image')
-							->from('`#__eiko_images`')
+							->from('#__eiko_images')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -371,7 +384,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_organisationen`')
+							->from('#__eiko_organisationen')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -393,7 +406,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_fahrzeuge`')
+							->from('#__eiko_fahrzeuge')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -415,7 +428,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_ausruestung`')
+							->from('#__eiko_ausruestung')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -437,7 +450,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_fahrzeuge`')
+							->from('#__eiko_fahrzeuge')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -459,7 +472,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_fahrzeuge`')
+							->from('#__eiko_fahrzeuge')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -481,7 +494,7 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$query = $db->getQuery(true);
 					$query
 							->select('name')
-							->from('`#__eiko_fahrzeuge`')
+							->from('#__eiko_fahrzeuge')
 							->where('id = ' . $db->quote($db->escape($value)));
 					$db->setQuery($query);
 					$results = $db->loadObject();
@@ -496,27 +509,27 @@ class EinsatzkomponenteModelEinsatzberichte extends JModelList {
 					$oneItem->status_fb = JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_STATUS_FB_OPTION_' . strtoupper($oneItem->status_fb));
 					$oneItem->status = JText::_('COM_EINSATZKOMPONENTE_EINSATZBERICHTE_STATUS_OPTION_' . strtoupper($oneItem->status));
 
-			if (isset($oneItem->article_id)) {
-				$values = explode(',', $oneItem->article_id);
+			// if (isset($oneItem->article_id)) {
+				// $values = explode(',', $oneItem->article_id);
 
-				$textValue = array();
-				foreach ($values as $value){
-					$db = JFactory::getDbo();
-					$query = $db->getQuery(true);
-					$query
-							->select('title')
-							->from('`#__content`')
-							->where('id = ' . $db->quote($db->escape($value)));
-					$db->setQuery($query);
-					$results = $db->loadObject();
-					if ($results) {
-						$textValue[] = $results->title;
-					}
-				}
+				// $textValue = array();
+				// foreach ($values as $value){
+					// $db = JFactory::getDbo();
+					// $query = $db->getQuery(true);
+					// $query
+							// ->select('title')
+							// ->from('#__content')
+							// ->where('id = ' . $db->quote($db->escape($value)));
+					// $db->setQuery($query);
+					// $results = $db->loadObject();
+					// if ($results) {
+						// $textValue[] = $results->title;
+					// }
+				// }
 
-			$oneItem->article_id = !empty($textValue) ? implode(', ', $textValue) : $oneItem->article_id;
+			// $oneItem->article_id = !empty($textValue) ? implode(', ', $textValue) : $oneItem->article_id;
 
-			}
+			// }
 		}
         return $items;
     }

@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) 2013 by Ralf Meyer. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 defined('JPATH_BASE') or die;
 jimport('joomla.form.formfield');
@@ -44,9 +44,11 @@ class JFormFieldeinsatzfahrzeuge extends JFormField
                         $db->setQuery($query);
                         $vehicles = $db->loadObjectList();
                                 foreach ($vehicles as $vehicle) {
+									if ($this->value) : 
 										foreach ($this->value as $value) {
 										if ($value == $vehicle->id) : $selected = 'selected';endif;
 										}
+								   endif;
                                         $html[].='<option '.$selected.' value="'.$vehicle->id.'">' . $vehicle->name . ' ( '.$org->name.' ) </option>';
 										$selected = '';
                                 }
@@ -61,7 +63,13 @@ class JFormFieldeinsatzfahrzeuge extends JFormField
                         if ($vehicles = $db->loadObjectList()) :
                         $html[].='<optgroup label="sonstige">';
                                 foreach ($vehicles as $vehicle) {
-                                        $html[].='<option value="'.$vehicle->id.'">' . $vehicle->name . ' ( sonstige ) </option>';
+										if ($this->value) : 
+											foreach ($this->value as $value) {
+											if ($value == $vehicle->id) : $selected = 'selected';endif;
+											}
+										endif;
+                                        $html[].='<option '.$selected.' value="'.$vehicle->id.'">' . $vehicle->name . ' ( sonstige ) </option>';
+										$selected = '';
                                 }
                         $html[].='</optgroup>';
 						endif;
@@ -69,9 +77,16 @@ class JFormFieldeinsatzfahrzeuge extends JFormField
                         $query = 'SELECT id,name from #__eiko_fahrzeuge where state = 2 order by ordering ASC';
                         $db->setQuery($query);
                         if ($vehicles = $db->loadObjectList()) :
-                        $html[].='<optgroup label="außer Dienst">';
+                        $html[].='<optgroup label="auÃŸer Dienst">';
+						
                                 foreach ($vehicles as $vehicle) {
-                                        $html[].='<option value="'.$vehicle->id.'">' . $vehicle->name . ' - a.D. ( ID '.$vehicle->id.' ) </option>';
+										if ($this->value) : 
+											foreach ($this->value as $value) {
+											if ($value == $vehicle->id) : $selected = 'selected';endif;
+											}
+										endif;
+                                        $html[].='<option '.$selected.' value="'.$vehicle->id.'">' . $vehicle->name . ' - a.D. ( ID '.$vehicle->id.' ) </option>';
+										$selected = '';
                                 }
                         $html[].='</optgroup>'; 
 						endif;

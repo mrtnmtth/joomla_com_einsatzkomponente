@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     3.0.0
+ * @version     3.15.0
  * @package     com_einsatzkomponente
- * @copyright   Copyright (C) by Ralf Meyer 2013. All rights reserved.
+ * @copyright   Copyright (C) 2017 by Ralf Meyer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Ralf Meyer <webmaster@feuerwehr-veenhusen.de> - http://einsatzkomponente.de
+ * @author      Ralf Meyer <ralf.meyer@mail.de> - https://einsatzkomponente.de
  */
 
 // No direct access
@@ -66,10 +66,6 @@ class EinsatzkomponenteViewGmapkonfiguration extends JViewLegacy
 			JToolBarHelper::apply('gmapkonfiguration.apply', 'JTOOLBAR_APPLY');
 			JToolBarHelper::save('gmapkonfiguration.save', 'JTOOLBAR_SAVE');
 		}
-		// If an existing item, can save to a copy.
-//		if (!$isNew && $canDo->get('core.create')) {
-//			JToolBarHelper::custom('gmapkonfiguration.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
-//		}
 		if (empty($this->item->id)) {
 			JToolBarHelper::cancel('gmapkonfiguration.cancel', 'JTOOLBAR_CANCEL');
 		}
@@ -80,8 +76,7 @@ class EinsatzkomponenteViewGmapkonfiguration extends JViewLegacy
 		JToolBarHelper::divider();
 		
 		if (!$checkedOut && ($canDo->get('core.admin'))){
-			//JToolBarHelper::custom('gmapkonfiguration.reset', 'save-new.png', 'save-new_f2.png', 'Einstellungen zurücksetzen', false);
-			JToolBarHelper::custom('gmapkonfiguration.reset', 'refresh.png', 'refresh_f2.png', 'Alle Werte zurücksetzen', false);		}
+			JToolBarHelper::custom('gmapkonfiguration.reset', 'refresh.png', 'refresh_f2.png', 'COM_EINSATZKOMPONENTE_GMAP_ALLE_WERTE_ZURUECKSETZEN', false);		}
 
 
 	}
