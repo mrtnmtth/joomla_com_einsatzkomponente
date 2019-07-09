@@ -216,7 +216,7 @@ $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
 <?php if ($this->params->get('display_detail_desc','1')): ?>
   <tr>
     <td  class="layout4_row_12" colspan="2">
-		<b><u><?php echo JText::_('COM_EINSATZKOMPONENTE_TITLE_MAIN_3');?></u></b>
+		<b><u class="einsatzbericht-title"><?php echo JText::_('COM_EINSATZKOMPONENTE_TITLE_MAIN_3');?></u></b>
 <?php jimport('joomla.html.content'); ?>  
 <?php $Desc = JHTML::_('content.prepare', $this->item->desc); ?>
 <div class="eiko_einsatzbericht_2">
@@ -224,17 +224,26 @@ $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
 </div>
     </td>
   </tr>
-    <tr>
-   <td class="layout4_row_4" style="border:hidden;width:100%;" colspan="2">
-		<?php
-			$plugin = JPluginHelper::getPlugin('content', 'myshariff') ;
-			if ($plugin) : 	echo JHTML::_('content.prepare', '{myshariff}');endif;
-			?>
-    </td>
-  </tr>
 <?php endif;?>
 <?php endif;?>
 <!--Einsatzbericht anzeigen mit Plugin-Support  ENDE-->           
+ 
+<!-- Plugin-Support "MyShariff" -->  
+		<?php
+			$plugin = JPluginHelper::getPlugin('content', 'myshariff') ;
+			if ($plugin) : 	
+			?>
+			    <tr>
+				<td class="layout4_row_4" style="border:hidden;width:100%;" colspan="2">
+			<?php
+			echo JHTML::_('content.prepare', '{myshariff}');
+			?>
+				</td>
+				</tr>
+			<?php
+			endif;
+			?>
+<!-- Plugin-Support "MyShariff"  ENDE -->  
  
 <!-- Presselinks -->           
 <?php if( $this->item->presse or $this->item->presse2 or $this->item->presse3) : ?>
@@ -277,7 +286,7 @@ $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
               <li>
                 <div class="thumbnail eiko_thumbnail_2" style="max-width:<?php echo $thumbwidth;?>;)">
     			<a href="<?php echo $fileName_image;?>" rel="highslide[<?php echo $this->item->id; ?>]" class="highslide" onClick="return hs.expand(this, { captionText: '<?php echo $this->einsatzlogo->title;?> am <?php echo date("d.m.Y - H:i", strtotime($this->item->date1)).' Uhr'; ?><?php if ($this->images[$i]->comment) : ?><?php echo '<br/>Bild-Info: '.$this->images[$i]->comment;?><?php endif; ?>' });" alt ="<?php echo $this->einsatzlogo->title;?>">
-                <img  class="eiko_img-rounded eiko_thumbs_2" src="<?php echo $fileName_thumb;?>"  alt="<?php echo $this->einsatzlogo->title;?>" title="Bild-Nr. <?php echo $this->images[$i]->id;?>"  style="width:<?php echo $this->params->get('detail_thumbwidth','100px');?>;)" alt ="<?php echo $this->einsatzlogo->title;?>"/>
+                <img  class="eiko_img-rounded eiko_thumbs_2" src="<?php echo $fileName_thumb;?>"  alt="<?php echo $this->einsatzlogo->title;?>" title="Bild-Nr. <?php echo $this->images[$i]->id;?>"  style="width:<?php echo $this->params->get('detail_thumbwidth','100px');?>;" alt ="<?php echo $this->einsatzlogo->title;?>"/>
 				
 <?php if ($this->images[$i]->comment) : ?>
 <br/><i class="icon-info-sign" style=" margin-right:5px;"></i><small>Bild-Info</small>
@@ -316,9 +325,23 @@ $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
 			</div>
             <?php endif;?>
 			<?php if ($this->params->get('gmap_action','0') == '2') :?>
-				<body onLoad="drawmap();">
-   				<div id="map" class="eiko_einsatzkarte_2" style="height:<?php echo $this->params->get('detail_map_height','250px');?>;"></div> 
+   				<div id="map_canvas" class="eiko_einsatzkarte_2" style="height:<?php echo $this->params->get('detail_map_height','250px');?>;"></div> 
     		<noscript>Dieser Teil der Seite erfordert die JavaScript Unterstützung Ihres Browsers!</noscript>
+			
+			<?php OsmHelper::installOsmMap();?>
+			<?php OsmHelper::callOsmMap($this->gmap_config->gmap_zoom_level,$this->gmap_config->start_lat,$this->gmap_config->start_lang); ?>
+			
+			<?php if ($this->params->get('display_detail_einsatz_marker','1')) :?>
+			<?php OsmHelper::addEinsatzortMap($this->item->gmap_report_latitude,$this->item->gmap_report_longitude,$this->item->summary,$this->einsatzlogo->icon,$this->item->id);?>
+			<?php endif;?> 
+			
+			<?php if ($this->params->get('display_detail_organisationen','1')) :?>
+			<?php OsmHelper::addOrganisationenMap($this->organisationen);?>
+			<?php endif;?>
+			<?php if ($this->params->get('display_detail_einsatzgebiet','1')) :?>
+			<?php OsmHelper::addPolygonMap($this->einsatzgebiet,'blue');?>
+			<?php endif;?> 
+
 			<?php endif;?>
 			<?php if ($this->params->get('gmap_action','0')) : ?>
             <?php if( $this->item->gmap ) : ?>

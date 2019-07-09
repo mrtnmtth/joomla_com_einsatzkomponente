@@ -52,6 +52,7 @@ $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
         <table width="100%"><tr>
         
             <?php if( $this->item->image ) : ?>
+			<?php $this->item->image = preg_replace("%thumbs/%", "", $this->item->image,1); ?>
             <td style="float:left;">            
                 <div class="detail_image">
                   <img   class="img-rounded" style="height:220px;" src="<?php echo JURI::Root();?><?php echo $this->item->image;?>"  alt="" title=""/>
@@ -65,16 +66,30 @@ $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
             <?php if( $this->item->gmap_report_latitude != '0' ) : ?> 
             <?php if( $this->params->get('display_detail_map_for_only_user','0') == '1' || $user->id ) :?> 
 			<?php if ($this->params->get('gmap_action','0')=='1') : ?>
-            <td style="float:right;">
+            <td style="float:right;width:50%;" class="eiko_top_td_detail_2">
 			<div  id="map-canvas" style="min-width:350px;width:100%;border:solid #000 1px;height:<?php echo $this->params->get('detail_map_height','250px');?>"></div>
             <div id="distance_direct" title ="Die Angabe kann vom tats&auml;chlichen Streckenverlauf abweichen, da diese Angabe automatisch von Google Maps errechnet wurde !"></div>
             </td>
             <?php endif;?>
 			<?php if ($this->params->get('gmap_action','0')=='2') : ?>
-            <td style="float:right;">
-				<body onLoad="drawmap();">
-				<div id="map" style="min-width:350px;width:100%;border:solid #000 1px;height:<?php echo $this->params->get('detail_map_height','250px');?>;"></div> 
-				<div class="hide"><p>Dieser Teil der Seite erfordert die JavaScript Unterstützung Ihres Browsers!</p></div>
+            <td style="float:right;width:50%;" class="eiko_top_td_detail_2">
+   				<div id="map_canvas" class="eiko_einsatzkarte_2" style="width:300px;height:<?php echo $this->params->get('detail_map_height','250px');?>;"></div> 
+    		<noscript>Dieser Teil der Seite erfordert die JavaScript Unterstützung Ihres Browsers!</noscript>
+			
+			<?php OsmHelper::installOsmMap();?>
+			<?php OsmHelper::callOsmMap($this->gmap_config->gmap_zoom_level,$this->gmap_config->start_lat,$this->gmap_config->start_lang); ?>
+			
+			<?php if ($this->params->get('display_detail_einsatz_marker','1')) :?>
+			<?php OsmHelper::addEinsatzortMap($this->item->gmap_report_latitude,$this->item->gmap_report_longitude,$this->item->summary,$this->einsatzlogo->icon,$this->item->id);?>
+			<?php endif;?> 
+			
+			<?php if ($this->params->get('display_detail_organisationen','1')) :?>
+			<?php OsmHelper::addOrganisationenMap($this->organisationen);?>
+			<?php endif;?>
+			<?php if ($this->params->get('display_detail_einsatzgebiet','1')) :?>
+			<?php OsmHelper::addPolygonMap($this->einsatzgebiet,'blue');?>
+			<?php endif;?> 
+
             </td>
             <?php endif;?>
 			<?php else:?> 
@@ -222,7 +237,7 @@ $lang->load('com_einsatzkomponente', JPATH_ADMINISTRATOR);
               <li>
                 <div class="thumbnail eiko_thumbnail_2" style="max-width:<?php echo $thumbwidth;?>;)">
     			<a href="<?php echo $fileName_image;?>" rel="highslide[<?php echo $this->item->id; ?>]" class="highslide" onClick="return hs.expand(this, { captionText: '<?php echo $this->einsatzlogo->title;?> am <?php echo date("d.m.Y - H:i", strtotime($this->item->date1)).' Uhr'; ?><?php if ($this->images[$i]->comment) : ?><?php echo '<br/>Bild-Info: '.$this->images[$i]->comment;?><?php endif; ?>' });" alt ="<?php echo $this->einsatzlogo->title;?>">
-                <img  class="eiko_img-rounded eiko_thumbs_2" src="<?php echo $fileName_thumb;?>"  alt="<?php echo $this->einsatzlogo->title;?>" title="Bild-Nr. <?php echo $this->images[$i]->id;?>"  style="width:<?php echo $this->params->get('detail_thumbwidth','100px');?>;)" alt ="<?php echo $this->einsatzlogo->title;?>"/>
+                <img  class="eiko_img-rounded eiko_thumbs_2" src="<?php echo $fileName_thumb;?>"  alt="<?php echo $this->einsatzlogo->title;?>" title="Bild-Nr. <?php echo $this->images[$i]->id;?>"  style="width:<?php echo $this->params->get('detail_thumbwidth','100px');?>;" alt ="<?php echo $this->einsatzlogo->title;?>"/>
 				
 <?php if ($this->images[$i]->comment) : ?>
 <br/><i class="icon-info-sign" style=" margin-right:5px;"></i><small>Bild-Info</small>

@@ -11,7 +11,8 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
-
+JLoader::import('helpers.einsatzkomponente', JPATH_SITE.'/administrator/components/com_einsatzkomponente');
+JLoader::import('helpers.osm', JPATH_SITE.'/administrator/components/com_einsatzkomponente'); 
 /**
  * View class for a list of Einsatzkomponente.
  */
@@ -22,16 +23,18 @@ class EinsatzkomponenteViewEinsatzarchiv extends JViewLegacy {
     protected $state;
     protected $params;
     protected $version;
-    protected $monate;
 	protected $modulepos_1;
 	protected $modulepos_2;
 	protected $gmap_config;
+	protected $einsatzorte;
+	protected $organisationen;
+	protected $einsatzgebiet;
+	
 
     /**
      * Display the view
      */
     public function display($tpl = null) {
-		require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers/einsatzkomponente.php'; // Helper-class laden
         $app = JFactory::getApplication();
 
         $this->state = $this->get('State');
@@ -66,14 +69,29 @@ class EinsatzkomponenteViewEinsatzarchiv extends JViewLegacy {
 		// Import CSS aus Optionen
 		$document->addStyleDeclaration($this->params->get('main_css','')); 
 		
-		
+			// GoogleMaps-Karte Daten vorbereiten
 		if ($this->params->get('gmap_action','0') == '1') :
 			
-			$standort = new StdClass;
+			// Einsatzorte für Übersichtskarte
+			$einsatzorte='[]'; 
+		if ($this->params->get('display_home_missions','1')) :
+			$i = '0';
+			$einsatzorte='['; 
+			foreach ($this->items as $i => $item) : 
+				if ($item->gmap AND $item->state == '1') :
+				$einsatzorte= $einsatzorte.'["'.$item->summary.'",'.$item->gmap_report_latitude.','.$item->gmap_report_longitude.','.$i.',"'.$item->icon.'","'.$item->summary.'","'.$item->id.'","'.$item->address.'"],';
+				endif;
+			endforeach; 
+	  		$einsatzorte=substr($einsatzorte,0,strlen($einsatzorte)-1);
+	  		$einsatzorte=$einsatzorte.' ];';
+			// Einsatzorte für Übersichtskarte  ENDE
+		endif;
+			
+	$standort = new StdClass;
 			$standort->gmap_latitude = '0';
 			$standort->gmap_longitude= '0';
 			$orga = EinsatzkomponenteHelper::getOrganisationen(); 
-		if ($this->params->get('display_detail_organisationen','1')) :
+		if ($this->params->get('display_home_organisationen','1')) :
 			$orga = EinsatzkomponenteHelper::getOrganisationen(); 
 	  		$organisationen='['; // Feuerwehr Details  ------>
 	  		$n=0;
@@ -127,95 +145,69 @@ class EinsatzkomponenteViewEinsatzarchiv extends JViewLegacy {
 		$gmap_onload 		= $this->gmap_config->gmap_onload;
 		$zoom_control 		= 'true';
 		$document->addScript('//maps.googleapis.com/maps/api/js?key='.$this->params->get ("gmapkey","AIzaSyAuUYoAYc4DI2WBwSevXMGhIwF1ql6mV4E"));			
-		$document->addScriptDeclaration( EinsatzkomponenteHelper::getGmap($marker1_title,$marker1_lat,$marker1_lng,$marker1_image,$marker2_title,$marker2_lat,$marker2_lng,$marker2_image,$center_lat,$center_lng,$gmap_zoom_level,$gmap_onload,$zoom_control,$organisationen,$orga_image,$einsatzgebiet,$display_detail_popup,$standort,$display_map_route) );		
+		$document->addScriptDeclaration( EinsatzkomponenteHelper::getGmap($marker1_title,$marker1_lat,$marker1_lng,$marker1_image,$marker2_title,$marker2_lat,$marker2_lng,$marker2_image,$center_lat,$center_lng,$gmap_zoom_level,$gmap_onload,$zoom_control,$organisationen,$orga_image,$einsatzgebiet,$display_detail_popup,$standort,$display_map_route,$einsatzorte) );		
 		endif;
 
-		if ($this->params->get('gmap_action','0') == '2') :
+		// OSM-Karte Daten vorbereiten
+	if ($this->params->get('gmap_action','0') == '2') {
 		
-			$standort = new StdClass;
-			$standort->gmap_latitude = '0';
-			$standort->gmap_longitude= '0';
+			// Einsatzorte für Übersichtskarte
+			$this->einsatzorte='[]'; 
+		if ($this->params->get('display_home_missions','1')) :
+			$i = '0';
+			$this->einsatzorte='['; 
+			foreach ($this->items as $i => $item) : 
+				if ($item->gmap AND $item->state == '1') :
+			$this->einsatzorte= $this->einsatzorte.'{"name":"'.$item->summary.'","lat":"'.$item->gmap_report_latitude.'","lon":"'.$item->gmap_report_longitude.'","i":"'.$i.'","icon":"'.$item->icon.'","id":"'.$item->id.'","address":"'.$item->address.'"},';
+				endif;
+			endforeach; 
+	  		$this->einsatzorte=substr($this->einsatzorte,0,strlen($this->einsatzorte)-1);
+	  		$this->einsatzorte=$this->einsatzorte.']';
+			// Einsatzorte für Übersichtskarte  ENDE
+		endif;
+
 
 			$orga = EinsatzkomponenteHelper::getOrganisationen(); 
-		if ($this->params->get('display_detail_organisationen','1')) :
+		if ($this->params->get('display_home_organisationen','1')) :
 			$orga = EinsatzkomponenteHelper::getOrganisationen(); 
-	  		$organisationen='['; // Feuerwehr Details  ------>
+	  		$this->organisationen='['; // Feuerwehr Details  ------>
 	  		$n=0;
 	  		for($i = 0; $i < count($orga); $i++) {
 			$orga_image 	= $orga[$i]->gmap_icon_orga;
 			if (!$orga_image) : $orga_image= 'images/com_einsatzkomponente/images/map/icons/'.$this->params->get('einsatzkarte_orga_image','haus_rot.png'); endif;
 		  	if($i==$n-1){
-			$organisationen=$organisationen.'["'.$orga[$i]->name.'",'.$orga[$i]->gmap_latitude.','.$orga[$i]->gmap_longitude.','.$i.',"'.$orga_image.'"]';
+			$this->organisationen=$this->organisationen.'{"name":"'.$orga[$i]->name.'","lat":"'.$orga[$i]->gmap_latitude.'","lon":"'.$orga[$i]->gmap_longitude.'","i":"'.$i.'","icon":"'.$orga_image.'","id":"'.$orga[$i]->id.'"}';
 		 	}else {
-			$organisationen=$organisationen.'["'.$orga[$i]->name.'",'.$orga[$i]->gmap_latitude.','.$orga[$i]->gmap_longitude.','.$i.',"'.$orga_image.'"';
-			$organisationen=$organisationen.'],';
+			$this->organisationen=$this->organisationen.'{"name":"'.$orga[$i]->name.'","lat":"'.$orga[$i]->gmap_latitude.'","lon":"'.$orga[$i]->gmap_longitude.'","i":"'.$i.'","icon":"'.$orga_image.'","id":"'.$orga[$i]->id.'"';
+			$this->organisationen=$this->organisationen.'},';
 		    }
 	        }
-	  		$organisationen=substr($organisationen,0,strlen($organisationen)-1);
-	  		$organisationen=$organisationen.' ];';
+	  		$this->organisationen=substr($this->organisationen,0,strlen($this->organisationen)-1);
+	$this->organisationen=$this->organisationen.']';
 		else:
-			$organisationen	 = '[["",1,1,0,"images/com_einsatzkomponente/images/map/icons/'.$this->params->get('einsatzkarte_orga_image','haus_rot.png').'"],["",1,1,0,"images/com_einsatzkomponente/images/map/icons/'.$this->params->get('einsatzkarte_orga_image','haus_rot.png').'"] ]';	
+			$this->organisationen	 = '[{"name:"","lat":"1","lon":"1","i"="0","icon":"images/com_einsatzkomponente/images/map/icons/'.$this->params->get('einsatzkarte_orga_image','haus_rot.png').'"}]';	
 			endif;
 			
 	  	 $alarmareas1  = $this->gmap_config->gmap_alarmarea;  // Einsatzgebiet  ---->
 	 	 $alarmareas = explode('|', $alarmareas1);
-	     $einsatzgebiet='[ ';
+	     $this->einsatzgebiet='[';
 		  for($i = 0; $i < count($alarmareas)-1; $i++)
 		  {
 			  	  $areas = explode(',', $alarmareas[$i]);
-				  $einsatzgebiet=$einsatzgebiet.'['.$areas[1].','.$areas[0].'],';
+				  $this->einsatzgebiet=$this->einsatzgebiet.'['.$areas[0].','.$areas[1].'],';
 		  }
 		$areas = explode(',', $alarmareas[0]);
-		$einsatzgebiet=$einsatzgebiet.'['.$areas[1].','.$areas[0].'],';
-	    $einsatzgebiet=substr($einsatzgebiet,0,strlen($einsatzgebiet)-1);
-	    $einsatzgebiet=$einsatzgebiet.' ]';	
+		//$this->einsatzgebiet=$this->einsatzgebiet.'['.$areas[0].','.$areas[1].'],';
+	    $this->einsatzgebiet=substr($this->einsatzgebiet,0,strlen($this->einsatzgebiet)-1);
+	    $this->einsatzgebiet=$this->einsatzgebiet.']';	
 		if (!$this->params->get('display_home_einsatzgebiet','1')) :
-		$einsatzgebiet='[[0,0]]';
+		$this->einsatzgebiet='[[0,0]]';
 		endif;
 		
-		$display_map_route		= 'false';	
-		
-        $display_detail_popup = 'false';
-		$marker1_title 		= '1'; // leer
-		$marker1_lat  		= '1'; // leer
-		$marker1_lng 		= '1'; // leer
-		$marker1_image 		= '../../images/com_einsatzkomponente/images/map/icons/'.$this->params->get('detail_pointer1_image','circle.png');
-		$marker2_title 		= ''; // leer
-		$marker2_lat  		= ''; // leer
-		$marker2_lng 		= '';// leer
-		$marker2_image 		= ''; // leer
-		$marker2_lat  		= '';// leer
-		$marker2_lng 		= '';// leer
-		$center_lat  		= $this->gmap_config->start_lat;
-		$center_lng 		= $this->gmap_config->start_lang;
-		$gmap_zoom_level 	= $this->gmap_config->gmap_zoom_level; 
-		$gmap_onload 		= $this->gmap_config->gmap_onload;
-		$zoom_control 		= 'true';
- 		$document->addScript('components/com_einsatzkomponente/assets/osm/util.js');
-   		$document->addScript('https://openlayers.org/api/OpenLayers.js');				
-   		$document->addScript('https://openstreetmap.org/openlayers/OpenStreetMap.js');	
- 		$document->addStyleSheet('components/com_einsatzkomponente/assets/osm/map.css');		
- 		$document->addStyleSheet('components/com_einsatzkomponente/assets/osm/ie_map.css');	
- 		$document->addScript('components/com_einsatzkomponente/assets/osm/OpenLayers_Map_minZoom_maxZoom_Patch.js');
-		$document->addScriptDeclaration( EinsatzkomponenteHelper::getOsm($marker1_title,$marker1_lat,$marker1_lng,$marker1_image,$marker2_title,$marker2_lat,$marker2_lng,$marker2_image,$center_lat,$center_lng,$gmap_zoom_level,$gmap_onload,$zoom_control,$organisationen,$orga_image,$einsatzgebiet,$display_detail_popup,$standort,$display_map_route) );											
- 		endif;
+	}
 		
 		//Komponentenversion aus Datenbank lesen
 		$this->version 		= EinsatzkomponenteHelper::getVersion (); 
-
-		// Monatsnamen auf Deutsch
-		$this->monate = array(1=>"Januar",
-                2=>"Februar",
-                3=>"M&auml;rz",
-                4=>"April",
-                5=>"Mai",
-                6=>"Juni",
-                7=>"Juli",
-                8=>"August",
-                9=>"September",
-                10=>"Oktober",
-                11=>"November",
-                12=>"Dezember");
 
 		  //----Modulposition laden ----
 		$this->modulepos_1 = '<div class="mod_eiko1">'.EinsatzkomponenteHelper::module ('eiko1').'</div>'; 

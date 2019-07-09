@@ -11,6 +11,50 @@
 <?php defined('_JEXEC') or die(); ?>
 <h1>Einsatzkomponente für das Joomla-CMS</h1>
 
+<h3>Changelog <small>Version 3.30</small></h3>
+<ul>
+# Updateserver erneuert
+# Bugfix Detaillink in der Einsatzkarte
+# Detail-Layout 3 bei Einsatzberichten geändert 
+</ul>
+
+<h3>Changelog <small>Version 3.22</small></h3>
+<ul>
++ OSM-Karten hinzugefügt
+</ul>
+
+<h3>Changelog <small>Version 3.21</small></h3>
+<ul>
+# State-Problem ab Joomla 3.9.1 behoben
++ Readmore-Funktion in Ausrüstung-Ansichten 
+# alle Einsatzorte auf Einsatzübersichtskarte
+# Überlagerung Pagination
+# Bug in der Übersicht-Pagination behoben
+</ul>
+
+<h3>Changelog <small>Version 3.20</small></h3>
+<ul>
+# Bug durch Update auf Joomla 3.8.4 (Übersichtsbutton,Filter,...)
+# Entferne alte Einsatzbericht-Optionen (mttronc)
+# Organisation-Filter (Placeholder) im Einsatzarchiv (mttronc)
+# überarbeitete Monatsnamenerzeugung (mttronc)
+# Joomla-Artikel Intro-Text wurde doppelt angezeigt
+# Joomla-Artikel aus Frontend erstellen (Option-Bug)
+# Detail_Layout4 Socialbuttons MyShariff
+</ul>
+
+<h3>Changelog <small>Version 3.18</small></h3>
+<ul>
+# Die alte Einsatzübersicht wird nicht mehr unterstützt !
+# exportierter Joomla-Artikel war trotz abwählter Option immer Haupteintrag
+# exportierter Joomla-Artikel wird bei Bearbeitung des Einsatzberichtes geupdatet 
+# Fehlerhafter Image-Upload seit J!3.8.2
+# PDF Zeilenumbruch bei Organisationen und Fahrzeugen
++ System-Read more in Artikelexport hinzugefügt
+# Fehler Frontendeintrag,-bearbeitung: fehlende Organisationen
+# Option Streckenverlauf Farbe der Auswahlbuttons rot-grün
+</ul>
+
 <h3>Changelog <small>Version 3.17</small></h3>
 <ul>
 + Presselinkinfo in Übersicht als Icon möglich

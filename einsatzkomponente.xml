@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2.0" method="upgrade">
     <name>com_einsatzkomponente</name>
-    <creationDate>2017-08-06</creationDate>
-    <copyright>Copyright (C) 2017 by Ralf Meyer. All rights reserved.</copyright>
+    <creationDate>2019-03-25</creationDate>
+    <copyright>Copyright (C) 2019 by Ralf Meyer. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later</license>
     <author>Ralf Meyer</author>
     <authorEmail>ralf.meyer@mail.de</authorEmail>
     <authorUrl>https://einsatzkomponente.de</authorUrl>
-    <version>3.17-3</version> 
+    <version>3.30.0</version> 
 	
     <description>
             <![CDATA[
 			<h1>Einsatzkomponente</h1><h3>für das Joomla-CMS</h3>
 			<div style="clear: both;"></div>
-			<p>Copyright (C) 2016 Ralf Meyer</p>
+			<p>Copyright (C) 2018 Ralf Meyer</p>
 			<p>Website: <a href='https://www.einsatzkomponente.de'>www.einsatzkomponente.de</a></p>
 			]]>
 	</description>
@@ -44,6 +44,7 @@
         <filename>einsatzkomponente.php</filename>
         <filename>controller.php</filename>
         <filename>router.php</filename>
+        <folder>helpers</folder>
         <folder>views</folder>
         <folder>assets</folder>
         <folder>models</folder>

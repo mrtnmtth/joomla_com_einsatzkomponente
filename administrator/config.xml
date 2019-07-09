@@ -144,7 +144,6 @@
        <field name="watermark_image" type="media"
 			label="COM_EINSATZKOMPONENTE_OPTION_WASSERZEICHEN_WAEHLEN" 
 			description="Sie können Wasserzeichen hinzufügen. Die Datei muss zwingend eine PNG-Datei sein !!" 
-            filter="raw"
 		    preview="true"
 	        preview_height="200px"
 			showon="watermark_show:true"
@@ -198,7 +197,7 @@
 		<field
 			name="gmapkey"
 			type="text"
-			default ="AIzaSyAuUYoAYc4DI2WBwSevXMGhIwF1ql6mV4E"
+			default =""
 			label="COM_EINSATZKOMPONENTE_OPTION_GOOGLE_API_KEY"
 			width ="100"
 			hint="GoogleMap Api-Key benötigt"
@@ -225,7 +224,7 @@
 			<field
 				name="detail_gmap_onload"
 				type="list"
-				showon="gmap_action:1,2"
+				showon="gmap_action:1"
 				label="COM_EINSATZKOMPONENTE_KARTENTYP"
 				description="Normal: zeigt die normale Standard-2D-Karte / Satellite: zeigt Luftaufnahmen des Geländes an / Hybrid: zeigt eine Mischung aus Satellite und Normal an (Luftaufnahme mit hinterlegten Straßen- Städtenamen) usw. (nur für GoogleMaps)"
 				default="HYBRID"
@@ -338,7 +337,6 @@
 		    <field name="standard_share_image" type="media"
             label="COM_EINSATZKOMPONENTE_EINSTELLUNG_SOCIAL_SHARE_IMAGE"
             description="Sie können hier ein Bild hinterlegen, wenn immer nur dieses als Standardbild geteilt werden soll." 
-            filter="raw"
 		    preview="true"
 	        preview_height="200px"
 			id="share_image_klein"
@@ -502,6 +500,62 @@
 				class="btn-group"
 				default="1"
 				label="COM_EINSATZKOMPONENTE_ANZEIGE_BILD"
+				description="">
+					<option
+						value="0">JNO</option>
+					<option
+						value="1">JYES</option>
+			</field>
+		
+			<field
+				name="display_rss_orgas"
+				type="radio"
+				showon ="display_home_rss:1"
+				class="btn-group"
+				default="1"
+				label="COM_EINSATZKOMPONENTE_ANZEIGE_RSS_ORGAS" 
+				description="">
+					<option
+						value="0">JNO</option>
+					<option
+						value="1">JYES</option>
+			</field>
+			
+			<field
+				name="display_rss_vehicles"
+				type="radio"
+				showon ="display_home_rss:1"
+				class="btn-group"
+				default="0"
+				label="COM_EINSATZKOMPONENTE_ANZEIGE_RSS_VEHICLES" 
+				description="">
+					<option
+						value="0">JNO</option>
+					<option
+						value="1">JYES</option>
+			</field>
+			
+			<field
+				name="display_rss_people"
+				type="radio"
+				showon ="display_home_rss:1"
+				class="btn-group"
+				default="0"
+				label="COM_EINSATZKOMPONENTE_ANZEIGE_RSS_PEOPLE" 
+				description="">
+					<option
+						value="0">JNO</option>
+					<option
+						value="1">JYES</option>
+			</field>
+		
+			<field
+				name="display_rss_time"
+				type="radio"
+				showon ="display_home_rss:1"
+				class="btn-group"
+				default="0"
+				label="COM_EINSATZKOMPONENTE_ANZEIGE_RSS_TIME" 
 				description="">
 					<option
 						value="0">JNO</option>
@@ -753,57 +807,28 @@
 			<option
 				value="1">JYES</option>
 	  </field>
+	  
+	  <field
+			name="display_home_missions"
+			type="radio"
+			showon="gmap_action:1,2"
+			class="btn-group"
+			default="1"
+			label="Einsatzorte auf Karte"
+			description="">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
+	  </field>
+	  
 		<field
 			name="spacer7"
 			type="spacer"
+			showon="gmap_action:1,2"
 			hr="true"
 		/>
-	  <field
-			name="display_filter_jahre"
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_FILTER_YEAR"
-			description="Funktion nur beim Standard-Layout">
-			
-			<option
-				value="0">JNO</option>
-			<option
-				value="1">JYES</option>
-	  </field>
 
-	  <field
-			name="display_filter_einsatzarten"
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_FILTER_EINSATZARTEN"
-			description="Funktion nur beim Standard-Layout">
-			
-			<option
-				value="0">JNO</option>
-			<option
-				value="1">JYES</option>
-	  </field>
-
-	  <field
-			name="display_filter_organisationen"
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_FILTER_ORGANISATIONEN"
-			description="Funktion nur beim Standard-Layout">
-			
-			<option
-				value="0">JNO</option>
-			<option
-				value="1">JYES</option>
-	  </field>
-		<field
-			name="spacer8"
-			type="spacer"
-			hr="true"
-		/>
 	  <field
 			name="display_home_number"
 			type="radio"
@@ -844,19 +869,7 @@
 			<option
 				value="1">JYES</option>
 	  </field>
-	  <field
-			name="display_home_alertimage_num"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_ALERTING_IMAGE_NUM"
-			description="Funktion nur beim Standard-Layout">
-			
-			<option
-				value="0">JNO</option>
-			<option
-				value="1">COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_ALERTING_IMAGE_NUM_OPT</option>
-	  </field>
+
 	  <field
 			name="display_home_marker"
 			type="radio"
@@ -927,16 +940,6 @@
 			<option
 				value="1">JYES</option>
 	  </field>
-	  <field 
-		  name="float_list_icon" 
-		  type="list" 
-		  showon ="display_list_icon:1"
-		  default="right" 
-		  label="COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_POSITION_MISSION_ICON" 
-		  description="Funktion nur beim Standard-Layout">
-		<option value="left">COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_POSITION_MISSION_ICON_LEFT</option>
-		<option value="right">COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_POSITION_MISSION_ICON_RIGHT</option>
-	  </field>
 	  <field
 			name="display_tickerkat_icon"
 			type="radio"
@@ -949,16 +952,6 @@
 				value="0">JNO</option>
 			<option
 				value="1">JYES</option>
-	  </field>
-	  <field 
-		  name="float_tickerkat_icon" 
-		  type="list" 
-		  showon ="display_tickerkat_icon:1"
-		  default="right" 
-		  label="COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_POSITION_CATEGORY_ICON" 
-		  description="Funktion nur beim Standard-Layout">
-		<option value="left">COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_POSITION_CATEGORY_ICON_LEFT</option>
-		<option value="right">COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_POSITION_CATEGORY_ICON_RIGHT</option>
 	  </field>
 	  <field
 			name="display_home_image"
@@ -1016,7 +1009,6 @@
        <field name="presse_image" type="media"
 			label="COM_EINSATZKOMPONENTE_OPTION_PRESSEIMAGE_WAEHLEN" 
 			description="Sie können hier ein Bild als Presselink auswählen" 
-            filter="raw"
 		    preview="true"
 	        preview_height="80px"
 			showon="display_home_presse:1"
@@ -1456,13 +1448,13 @@
 				type="radio"
 				showon="gmap_action:1,2"
 				class="btn-group"
-				default="true"
+				default="1"
 				label="COM_EINSATZKOMPONENTE_OPTION_EINSATZBERICHT_EINSATZART_MAP_STRECKENVERLAUF"
 				description="Hier können Sie die Anzeige des Streckenverlauf von der erstgenanneten Organisation zum Einsatzort anzeigen lassen. (nur für GoogleMaps)">
 					<option
-						value="false">JNO</option>
+						value="0">JNO</option>
 					<option
-						value="true">JYES</option>
+						value="1">JYES</option>
 			</field>
 	  		<field
 				name="display_detail_einsatzgebiet"
@@ -1878,7 +1870,7 @@
 		<field 	name="main_css" 
 				type="textarea" 
 				filter="raw" 
-				default=".eiko_td_marker_main_1 {color:#ffffff;} .eiko_einsatzarchiv_jahr_tr,eiko_einsatzarchiv_jahr_td{background-color:#dddddd;color:#000000;font-size:24px !important;font-weight:bold !important;margin-top:50px !important;} eiko_einsatzarchiv_jahr_div {color:#ffffff important;} .eiko_einsatzarchiv_monat_tr,eiko_einsatzarchiv_monat_td {background-color:#cccccc;color:#000000;}eiko_einsatzarchiv_monat_div {color:#ffffff !important;}.eiko_span_marker_main_1 {color:#ffffff!important;}" 
+				default=""
 				label="COM_EINSATZKOMPONENTE_OPTION_CUSTOM_EINSATZ_UEBERSICHT" 
 				description="Füge hier den zusätzlichen CSS-Code für die Einsatz-Übersicht ein." 
 				rows="10" 

@@ -180,12 +180,8 @@ class EinsatzkomponenteModelEinsatzberichtForm extends JModelForm
 	{
 		$data = $this->getData(); 
         
-			$data->auswahl_orga = implode(',',$array);
+		//	$data->auswahl_orga = implode(',',$array);
 			if ($data->auswahl_orga == '') : // Vorbelegung Organisationen
-				//$db = JFactory::getDbo();
-				//$db->setQuery('SELECT id,ffw FROM #__eiko_organisationen WHERE ffw="1" LIMIT 1');
-				//$standard = $db->loadResult();
-				//$data->auswahl_orga = $standard['id'];
 			$params = JComponentHelper::getParams('com_einsatzkomponente');
 			$data->auswahl_orga = 	$params->get('pre_auswahl_orga','');
 			endif;
@@ -223,7 +219,7 @@ class EinsatzkomponenteModelEinsatzberichtForm extends JModelForm
             }
         }
         if ($authorised !== true) {
-            JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
             return false;
         }
         
@@ -240,7 +236,7 @@ class EinsatzkomponenteModelEinsatzberichtForm extends JModelForm
     {
         $id = (!empty($data['id'])) ? $data['id'] : (int)$this->getState('einsatzbericht.id');
         if(JFactory::getUser()->authorise('core.delete', 'com_einsatzkomponente.einsatzbericht'.$id) !== true){
-            JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
             return false;
         }
         $table = $this->getTable();

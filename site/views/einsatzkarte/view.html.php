@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die;
 jimport('joomla.application.component.view');
+JLoader::import('helpers.einsatzkomponente', JPATH_SITE.'/administrator/components/com_einsatzkomponente');
+JLoader::import('helpers.osm', JPATH_SITE.'/administrator/components/com_einsatzkomponente'); 
 /**
  * View class for a list of Einsatzkomponente.
  */
@@ -28,21 +30,17 @@ class EinsatzkomponenteViewEinsatzkarte extends JViewLegacy
     protected $einsatzarten;
     protected $layout_detail_link;
     protected $gmap_config;
-    protected $monate;
-	protected $einsatzgebiet;
 	/**
 	 * Display the view
 	 */
 	public function display($tpl = null)
 	{
-		require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers/einsatzkomponente.php'; // Helper-class laden
 		$app                = JFactory::getApplication();
         $this->state		= $this->get('State');
         $this->items		= $this->get('Items');
         $this->pagination	= $this->get('Pagination');
         $this->params       = $app->getParams('com_einsatzkomponente');
 		$this->gmap_config = EinsatzkomponenteHelper::load_gmap_config(); // GMap-Config aus helper laden 
-		//print_r ($this->params);break;
 		
 		
 		require_once JPATH_SITE.'/administrator/components/com_einsatzkomponente/helpers/einsatzkomponente.php'; // Helper-class laden
@@ -53,21 +51,9 @@ class EinsatzkomponenteViewEinsatzkarte extends JViewLegacy
 		//Komponentenversion aus Datenbank lesen
 		$this->version 		= EinsatzkomponenteHelper::getVersion (); 
 
-		//Limitstart und Limit für Pagination
-//        if ($this->params->get('display_home_pagination')) :
-//		$limitstart = $this->pagination->limitstart;
-//		$limitstart = $app->getUserStateFromRequest( "com_einsatzkomponente.limitstart", 'limitstart', $limitstart );
-//		$limit = $this->pagination->limit;
-//		else:
-//		$limitstart = '0';
-//		$limit = '10000';
-//		endif;
 		
 		//Einsatzdaten aus der Datenbank holen
 		$count = EinsatzkomponenteHelper::count_einsatz_daten_bestimmtes_jahr (''); 
-//		$this->pagination->total = count($count);
-//		$this->pagination->pagesTotal = ceil(count($count)/$limit);
-//		$this->pagination->pagesStop = ceil(count($count)/$limit);
 		$this->reports = EinsatzkomponenteHelper::einsatz_daten_bestimmtes_jahr ('','99999','0'); 
 
 		
@@ -117,20 +103,6 @@ class EinsatzkomponenteViewEinsatzkarte extends JViewLegacy
 		endif;
 
 
-$this->monate = array(1=>"Januar",
-                2=>"Februar",
-                3=>"M&auml;rz",
-                4=>"April",
-                5=>"Mai",
-                6=>"Juni",
-                7=>"Juli",
-                8=>"August",
-                9=>"September",
-                10=>"Oktober",
-                11=>"November",
-                12=>"Dezember");
-				
-		
 		 // Check for errors.
         if (count($errors = $this->get('Errors'))) {;
             throw new Exception(implode("\n", $errors));
