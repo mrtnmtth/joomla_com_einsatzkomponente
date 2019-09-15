@@ -104,7 +104,7 @@
 <!-- UPDATESERVER DEFINITION -->
 	<updateservers>
 		<!-- Note: No spaces or linebreaks allowed between the server tags -->
-		<server type="extension" name="Einsatzkomponente">https://raw.githubusercontent.com/mttronc/joomla_com_einsatzkomponente/fwrethen/update.xml</server>
+		<server type="extension" name="Einsatzkomponente">https://raw.githubusercontent.com/mrtnmtth/joomla_com_einsatzkomponente/fwrethen/update.xml</server>
 	</updateservers>
 
 	
