@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2.0" method="upgrade">
     <name>com_einsatzkomponente</name>
-    <creationDate>2019-03-25</creationDate>
+    <creationDate>2020-02-02</creationDate>
     <copyright>Copyright (C) 2019 by Ralf Meyer. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later</license>
     <author>Ralf Meyer</author>
     <authorEmail>ralf.meyer@mail.de</authorEmail>
     <authorUrl>https://einsatzkomponente.de</authorUrl>
-    <version>3.30.0</version> 
+    <version>3.42.0</version> 
 	
     <description>
             <![CDATA[
@@ -106,6 +106,4 @@
 		<!-- Note: No spaces or linebreaks allowed between the server tags -->
 		<server type="extension" name="Einsatzkomponente">https://raw.githubusercontent.com/mrtnmtth/joomla_com_einsatzkomponente/fwrethen/update.xml</server>
 	</updateservers>
-
-	
 </extension>
